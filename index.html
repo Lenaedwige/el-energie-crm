@@ -372,19 +372,25 @@ function generateDocFromCRM(client, docName) {
         dateFin: new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('fr-FR')
     };
     
-    // Déterminer le type de doc
+    // Déterminer le type de doc exact avec noms des fichiers
     const docTypeMap = {
-        'Convention': client.type === 'bilan' ? 'BILAN_Convention' : 'FORMATION_Convention',
-        'FORM 03-F': 'BILAN_FORM03F',
-        'Offre': 'BILAN_Offre',
-        'Émargement': 'BILAN_Emargement',
-        'Programme': 'FORMATION_Programme',
-        'Diagnostic': 'FORMATION_Diagnostic',
-        'Certificat': 'FORMATION_Certificat',
-        'Attestation': 'FORMATION_Certificat'
+        'Convention': client.type === 'bilan' ? 'BILAN_01_Convention_EL-ENERGIE_VIERGE.docx' : 'FORMATION_01_Convention_VIERGE.docx',
+        'FORM 03-F': 'BILAN_02_FORM03F_Guide_orientation_VIERGE.docx',
+        'Offre': 'BILAN_03_Offre_commerciale_VIERGE.docx',
+        'Émargement': 'BILAN_04_FORM16_Emargement_Avancement_VIERGE.xlsx',
+        'Programme': 'FORMATION_02_Programme_VIERGE.docx',
+        'Diagnostic': 'FORMATION_03_Diagnostic_VIERGE.docx',
+        'Certificat': 'FORMATION_04_Certificat_VIERGE.docx',
+        'Attestation': 'FORMATION_04_Certificat_VIERGE.docx',
+        'Synthèse': 'BILAN_01_Convention_EL-ENERGIE_VIERGE.docx'
     };
     
     const docType = docTypeMap[docName];
+    
+    if (!docType) {
+        alert(`⚠️ Type de document inconnu: ${docName}`);
+        return;
+    }
     
     // Appeler Google Apps Script via fetch
     const scriptUrl = "https://script.google.com/macros/s/AKfycbxqF7M53_fbPf30lRhCElqq0U9ECrZ6wMsd9hi8TftbRtvqnzpR-tYB-Rwk63aUYLtj/exec";
