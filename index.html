@@ -309,7 +309,7 @@ function getStatutClass(statut) {
 
 function getDocuments(type) {
     const docs = {
-        'bilans': ['Proposition', 'FORM 03-F', 'Émargement', 'Synthèse'],
+        'bilans': ['Contrat de sous-traitance', 'FORM 03-F', 'FORM 16', 'Offre', 'Dates', 'Synthèse'],
         'formations': ['Convention', 'Programme', 'Diagnostic', 'Certificat', 'Attestation'],
         'animations': ['Devis', 'Convention', 'Rapport', 'Attestation', 'Facture'],
         'seminaires': ['Devis', 'Convention', 'Rapport', 'Attestation', 'Facture']
@@ -375,7 +375,9 @@ function generateDocFromCRM(client, docName) {
     // Déterminer le type de doc exact avec noms des fichiers
     const docTypeMap = {
         'Convention': client.type === 'bilan' ? 'BILAN_01_Convention_EL-ENERGIE_VIERGE.docx' : 'FORMATION_01_Convention_VIERGE.docx',
+        'Contrat de sous-traitance': 'Contrat_de_sous_traitance_FINAL.docx',
         'FORM 03-F': 'BILAN_02_FORM03F_Guide_orientation_VIERGE.docx',
+        'FORM 16': 'BILAN_04_FORM16_Emargement_Avancement_VIERGE.xlsx',
         'Offre': 'BILAN_03_Offre_commerciale_VIERGE.docx',
         'Émargement': 'BILAN_04_FORM16_Emargement_Avancement_VIERGE.xlsx',
         'Programme': 'FORMATION_02_Programme_VIERGE.docx',
