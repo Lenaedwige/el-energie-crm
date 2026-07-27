@@ -193,7 +193,8 @@ let data = {
     bilans: [
         { id: 1, clientName: 'Clémence Bach', email: '', telephone: '', contact2: '', email2: '', telephone2: '', entreprise: '', prestationType: 'Premium', montantTTC: 1920, statut: 'En cours', notes: '', type: 'bilan', documents: {}, utilisateur: 'Edwige' },
         { id: 2, clientName: 'Schéhérazade Bencherif', email: '06 34 25 22 32', telephone: '06 34 25 22 32', contact2: '', email2: '', telephone2: '', entreprise: '', prestationType: 'Premium', montantTTC: 1850, statut: 'En cours', notes: '', type: 'bilan', documents: {}, utilisateur: 'Edwige' },
-        { id: 3, clientName: 'Thomas Surier', email: 'Thomas.surier@gmail.com', telephone: '+33 6 85 85 47 55', contact2: '', email2: '', telephone2: '', entreprise: 'Salarié - Contrôle pièces/radioprotection', prestationType: 'Premium', montantTTC: 1850, statut: 'En cours', notes: '6 RDV de 2h en distanciel', type: 'bilan', documents: {}, utilisateur: 'Edwige' }
+        { id: 3, clientName: 'Thomas Surier', email: 'Thomas.surier@gmail.com', telephone: '+33 6 85 85 47 55', contact2: '', email2: '', telephone2: '', entreprise: 'Salarié - Contrôle pièces/radioprotection', prestationType: 'Premium', montantTTC: 1850, statut: 'En cours', notes: '6 RDV de 2h en distanciel', type: 'bilan', documents: {}, utilisateur: 'Edwige' },
+        { id: 4, clientName: 'Julie Cousseau', email: 'julie.cousseau@laposte.net', telephone: '', contact2: '', email2: '', telephone2: '', entreprise: '', prestationType: 'Bilan de compétence Coach', montantTTC: 1542, statut: 'Prospect', notes: '', type: 'bilan', documents: {}, utilisateur: 'Edwige' }
     ],
     formations: [
         { id: 1, clientName: 'PML - GDI', email: '', telephone: '', contact2: 'Laura Mercurio', email2: '', telephone2: '', entreprise: 'Provence-Métropole Logement', prestationType: 'GDI - Chargés relations clientèle', montantTTC: 3000, statut: 'Prospect', notes: 'Contact: Laura Mercurio, Adrien Ben Oliel', type: 'formation', documents: {}, utilisateur: 'Edwige' },
@@ -407,7 +408,7 @@ function generateDocFromCRM(client, docName) {
     }
     
     // Appeler Google Apps Script via GET
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbwgpUywLR85_jr6JflzIw1gZip4B6ViSma0Z6HUKVkTrOaobRxra_fA9RmutNw8rpaO/exec";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbwcKiPNanODahbPcCi5zhgUpSiRJ__D4RL1TLV7V9A-O7OB4Jl-EGVTafwr9z4CXdkX/exec";
     
     // Construire l'URL avec les paramètres GET
     console.log("clientData avant URLSearchParams:", clientData);
