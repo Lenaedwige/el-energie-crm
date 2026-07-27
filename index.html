@@ -452,29 +452,38 @@ function closeCompleteFormModal() {
 }
 
 function submitCompleteForm(docType) {
-    // Récupérer tous les champs
-    const data = {
-        clientName: document.getElementById('formClientName').value,
-        email: document.getElementById('formEmail').value,
-        entreprise: document.getElementById('formEntreprise').value,
-        telephone: document.getElementById('formTelephone').value,
-        intituleAction: document.getElementById('formIntituleAction').value,
-        formateur: document.getElementById('formFormateur').value,
-        dureeHeures: document.getElementById('formDureeHeures').value,
-        dateDebut: document.getElementById('formDateDebut').value,
-        dateFin: document.getElementById('formDateFin').value,
-        lieu: document.getElementById('formLieu').value,
-        nbStagiaires: document.getElementById('formNbStagiaires').value,
-        montantTTC: document.getElementById('formMontantTTC').value,
-        prestationType: docType
-    };
+    // Récupérer les 4 champs clés
+    const clientName = document.getElementById('formClientName').value;
+    const dateDebut = document.getElementById('formDateDebut').value;
+    const dateFin = document.getElementById('formDateFin').value;
+    const montantTTC = document.getElementById('formMontantTTC').value;
     
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwKVbORSLtemCcqFNjsymVIfq6FHFJR7PC__IpcycHBc7hoVFQV4aVznrnDgM8UydCs/exec";
+    // Récupérer aussi les autres champs pour la complétude
+    const email = document.getElementById('formEmail').value;
+    const entreprise = document.getElementById('formEntreprise').value;
+    const telephone = document.getElementById('formTelephone').value;
+    const intituleAction = document.getElementById('formIntituleAction').value;
+    const formateur = document.getElementById('formFormateur').value;
+    const dureeHeures = document.getElementById('formDureeHeures').value;
+    const lieu = document.getElementById('formLieu').value;
+    const nbStagiaires = document.getElementById('formNbStagiaires').value;
+    
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTPuXDOmIsV6KnU3FUMTFqbgtVM_S6hdzf2saqnbCOwhD1k6LUYrJVb8BR9YsAll5f/exec";
     
     const params = new URLSearchParams();
-    for (let key in data) {
-        params.append(key, data[key] || '');
-    }
+    params.append('clientName', clientName || '');
+    params.append('email', email || '');
+    params.append('entreprise', entreprise || '');
+    params.append('telephone', telephone || '');
+    params.append('intituleAction', intituleAction || '');
+    params.append('formateur', formateur || '');
+    params.append('dureeHeures', dureeHeures || '');
+    params.append('dateDebut', dateDebut || '');
+    params.append('dateFin', dateFin || '');
+    params.append('lieu', lieu || '');
+    params.append('nbStagiaires', nbStagiaires || '');
+    params.append('montantTTC', montantTTC || '');
+    params.append('prestationType', docType || '');
     
     const fullURL = SCRIPT_URL + '?' + params.toString();
     console.log("Génération avec URL:", fullURL);
