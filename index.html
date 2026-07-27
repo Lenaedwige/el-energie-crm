@@ -353,26 +353,133 @@ function cycleDocStatus(type, clientId, docName) {
     
     saveData();
     renderTable(type);
-}    
+}
+
+function generateDocFromCRM(record, docType) {
+    console.log("generateDocFromCRM appelée avec:", record, docType);
+    
+    if (!record || !record.clientName) {
+        alert("Erreur: Aucune donnée client");
+        return;
+    }
+    
+    // Afficher un modal avec TOUS les champs
+    showCompleteFormModal(record, docType);
+}
+
+function showCompleteFormModal(record, docType) {
+    // Créer le modal HTML
+    const modalHTML = `
+        <div id="completeFormModal" style="display: flex; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
+            <div style="background: white; padding: 30px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                <h2 style="color: #0F4761; margin-bottom: 20px;">Complétez les informations du contrat</h2>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Nom du client</label>
+                    <input type="text" id="formClientName" value="${record.clientName || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Email</label>
+                    <input type="email" id="formEmail" value="${record.email || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Entreprise</label>
+                    <input type="text" id="formEntreprise" value="${record.entreprise || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Téléphone</label>
+                    <input type="text" id="formTelephone" value="${record.telephone || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Intitulé de l'action/formation</label>
+                    <input type="text" id="formIntituleAction" value="" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Formateur</label>
+                    <input type="text" id="formFormateur" value="Edwige Lena" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Durée (heures)</label>
+                    <input type="text" id="formDureeHeures" value="" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Date de début</label>
+                    <input type="date" id="formDateDebut" value="" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Date de fin</label>
+                    <input type="date" id="formDateFin" value="" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Lieu</label>
+                    <input type="text" id="formLieu" value="" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Nombre de stagiaires</label>
+                    <input type="number" id="formNbStagiaires" value="" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Montant TTC (€)</label>
+                    <input type="text" id="formMontantTTC" value="${record.montantTTC || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                </div>
+                
+                <div style="margin-top: 20px; text-align: right;">
+                    <button onclick="closeCompleteFormModal()" style="background: #ccc; color: #333; padding: 10px 20px; margin-left: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 13px;">Annuler</button>
+                    <button onclick="submitCompleteForm('${docType}')" style="background: #F37322; color: white; padding: 10px 20px; margin-left: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 13px;">Générer le document</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Injecter le modal dans la page
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closeCompleteFormModal() {
+    const modal = document.getElementById('completeFormModal');
+    if (modal) modal.remove();
+}
+
+function submitCompleteForm(docType) {
+    // Récupérer tous les champs
+    const data = {
+        clientName: document.getElementById('formClientName').value,
+        email: document.getElementById('formEmail').value,
+        entreprise: document.getElementById('formEntreprise').value,
+        telephone: document.getElementById('formTelephone').value,
+        intituleAction: document.getElementById('formIntituleAction').value,
+        formateur: document.getElementById('formFormateur').value,
+        dureeHeures: document.getElementById('formDureeHeures').value,
+        dateDebut: document.getElementById('formDateDebut').value,
+        dateFin: document.getElementById('formDateFin').value,
+        lieu: document.getElementById('formLieu').value,
+        nbStagiaires: document.getElementById('formNbStagiaires').value,
+        montantTTC: document.getElementById('formMontantTTC').value,
+        prestationType: docType
+    };
+    
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwFvvgJ5B8plDP7x_yOXRABLBE_DNA5sH8lG2fuDrTDoeBYpObMzNMekq9VxHS0UqB1/exec";
     
     const params = new URLSearchParams();
-    params.append('clientName', record.clientName || '');
-    params.append('email', record.email || '');
-    params.append('montantTTC', record.montantTTC || '0');
-    params.append('prestationType', record.prestationType || 'Bilan');
-    params.append('docType', docType || 'Contrat');
+    for (let key in data) {
+        params.append(key, data[key] || '');
+    }
     
     const fullURL = SCRIPT_URL + '?' + params.toString();
+    console.log("Génération avec URL:", fullURL);
     
-    console.log("URL générée:", fullURL);
-    console.log("Paramètres envoyés:");
-    console.log("  clientName:", record.clientName);
-    console.log("  email:", record.email);
-    console.log("  montantTTC:", record.montantTTC);
-    console.log("  prestationType:", record.prestationType);
-    console.log("  docType:", docType);
-    
+    closeCompleteFormModal();
     window.open(fullURL, '_blank');
 }
 
