@@ -356,6 +356,10 @@ function cycleDocStatus(type, clientId, docName) {
 }
 
 function generateDocFromCRM(client, docName) {
+    console.log("=== DEBUT generateDocFromCRM ===");
+    console.log("docName:", docName);
+    console.log("client:", client);
+    
     // Préparer les données
     const clientData = {
         clientName: client.clientName,
@@ -371,6 +375,8 @@ function generateDocFromCRM(client, docName) {
         dateDebut: new Date().toLocaleDateString('fr-FR'),
         dateFin: new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('fr-FR')
     };
+    
+    console.log("clientData préparées:", clientData);
     
     // Déterminer le type de doc exact avec noms des fichiers
     const docTypeMap = {
@@ -388,8 +394,10 @@ function generateDocFromCRM(client, docName) {
     };
     
     const docType = docTypeMap[docName];
+    console.log("docType mappé:", docType);
     
     if (!docType) {
+        console.error("ERREUR: Type de document inconnu:", docName);
         alert(`⚠️ Type de document inconnu: ${docName}`);
         return;
     }
@@ -397,24 +405,36 @@ function generateDocFromCRM(client, docName) {
     // Appeler Google Apps Script via fetch
     const scriptUrl = "https://script.google.com/macros/s/AKfycbzPWNBK0_5qVY8i85l_I4LPTQhx_CpLhcGQnFI9ua5QRj9XhAJESdHnlk1F9j4_I5M-/exec";
     
+    console.log("scriptUrl:", scriptUrl);
+    console.log("Envoi du POST avec données:", { clientData, docType });
+    
     if (scriptUrl) {
         fetch(scriptUrl, {
             method: 'POST',
             body: JSON.stringify({ clientData, docType })
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log("Réponse reçue - status:", response.status);
+            console.log("Réponse headers:", response.headers);
+            return response.json();
+        })
         .then(data => {
+            console.log("JSON parsé:", data);
             if (data.success) {
+                console.log("✓ Succès - URL:", data.document.fileUrl);
                 alert(`✓ ${docName} généré!\nLien: ${data.document.fileUrl}`);
             } else {
+                console.error("❌ Erreur serveur:", data.error);
                 alert(`❌ Erreur: ${data.error}`);
             }
         })
         .catch(err => {
-            console.error('Erreur génération:', err);
+            console.error('❌ ERREUR FETCH:', err);
+            console.error('Stack:', err.stack);
             alert('❌ Erreur de connexion au générateur');
         });
     } else {
+        console.error("ERREUR: Générateur non configuré");
         alert('⚠️ Générateur non configuré.');
     }
 }
