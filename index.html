@@ -409,8 +409,14 @@ function generateDocFromCRM(client, docName) {
     console.log("Envoi du POST avec données:", { clientData, docType });
     
     if (scriptUrl) {
+        console.log("Envoi du POST avec données:", { clientData, docType });
+        
         fetch(scriptUrl, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors',
             body: JSON.stringify({ clientData, docType })
         })
         .then(response => {
