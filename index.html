@@ -358,7 +358,11 @@ function cycleDocStatus(type, clientId, docName) {
 function generateDocFromCRM(client, docName) {
     console.log("=== DEBUT generateDocFromCRM ===");
     console.log("docName:", docName);
-    console.log("client:", client);
+    console.log("client objet complet:", client);
+    console.log("client.clientName:", client.clientName);
+    console.log("client.email:", client.email);
+    console.log("client.montantTTC:", client.montantTTC);
+    console.log("client.prestationType:", client.prestationType);
     
     // Préparer les données
     const clientData = {
@@ -402,30 +406,29 @@ function generateDocFromCRM(client, docName) {
         return;
     }
     
-    // Appeler Google Apps Script via fetch
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbyCiYxi73NrtRw8Otx7ev664JC4AwAkMMfYh0RAL7dBAeVZYDpZiiavQdp5tytyT_1c/exec";
+    // Appeler Google Apps Script via GET
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbwgpUywLR85_jr6JflzIw1gZip4B6ViSma0Z6HUKVkTrOaobRxra_fA9RmutNw8rpaO/exec";
     
-    console.log("scriptUrl:", scriptUrl);
-    console.log("Envoi du POST avec données:", { clientData, docType });
+    // Construire l'URL avec les paramètres GET
+    console.log("clientData avant URLSearchParams:", clientData);
+    
+    const params = new URLSearchParams({
+        clientName: clientData.clientName,
+        email: clientData.email,
+        montantTTC: clientData.montantTTC,
+        prestationType: clientData.prestationType,
+        docType: docType
+    });
+    
+    const urlWithParams = scriptUrl + "?" + params.toString();
+    
+    console.log("URL finale complète:", urlWithParams);
     
     if (scriptUrl) {
-        console.log("Envoi du POST avec données:", { clientData, docType });
-        
-        fetch(scriptUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors',
-            body: JSON.stringify({ clientData, docType })
-        })
-        .then(response => {
-            console.log("Réponse reçue - status:", response.status);
-            console.log("Réponse headers:", response.headers);
-            return response.json();
-        })
+        fetch(urlWithParams)
+        .then(response => response.json())
         .then(data => {
-            console.log("JSON parsé:", data);
+            console.log("Réponse reçue:", data);
             if (data.success) {
                 console.log("✓ Succès - URL:", data.document.fileUrl);
                 alert(`✓ ${docName} généré!\nLien: ${data.document.fileUrl}`);
@@ -436,7 +439,6 @@ function generateDocFromCRM(client, docName) {
         })
         .catch(err => {
             console.error('❌ ERREUR FETCH:', err);
-            console.error('Stack:', err.stack);
             alert('❌ Erreur de connexion au générateur');
         });
     } else {
