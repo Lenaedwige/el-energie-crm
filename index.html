@@ -452,13 +452,14 @@ function closeCompleteFormModal() {
 }
 
 function submitCompleteForm(docType) {
-    // Récupérer les 4 champs clés
+    // Récupérer les 4 champs clés + montantHT + formateur auto
     const clientName = document.getElementById('formClientName').value;
     const dateDebut = document.getElementById('formDateDebut').value;
     const dateFin = document.getElementById('formDateFin').value;
+    const montantHT = document.getElementById('formMontantHT').value;
     const montantTTC = document.getElementById('formMontantTTC').value;
     
-    // Récupérer aussi les autres champs pour la complétude
+    // Récupérer aussi les autres champs
     const email = document.getElementById('formEmail').value;
     const entreprise = document.getElementById('formEntreprise').value;
     const telephone = document.getElementById('formTelephone').value;
@@ -482,6 +483,7 @@ function submitCompleteForm(docType) {
     params.append('dateFin', dateFin || '');
     params.append('lieu', lieu || '');
     params.append('nbStagiaires', nbStagiaires || '');
+    params.append('montantHT', montantHT || '');
     params.append('montantTTC', montantTTC || '');
     params.append('prestationType', docType || '');
     
