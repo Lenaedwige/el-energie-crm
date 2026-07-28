@@ -214,7 +214,15 @@ let editingType = null;
 function loadData() {
     const saved = localStorage.getItem('crm-data-complet');
     if (saved) {
-        data = JSON.parse(saved);
+        try {
+            const parsed = JSON.parse(saved);
+            // Charger seulement si les données ne sont pas vides
+            if (parsed && (parsed.bilans?.length > 0 || parsed.formations?.length > 0 || parsed.animations?.length > 0 || parsed.seminaires?.length > 0)) {
+                data = parsed;
+            }
+        } catch(e) {
+            // localStorage corrompu, garder les données par défaut
+        }
     }
     const savedUser = localStorage.getItem('crm-current-user');
     if (savedUser) {
