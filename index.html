@@ -343,6 +343,16 @@ function sendEmail(record) {
     window.location.href = mailtoLink;
 }
 
+function getDocTypeFromName(docName) {
+    const mapping = {
+        'Contrat de sous-traitance': 'contrat',
+        'FORM 03-F': 'form03',
+        'FORM 16': 'form16',
+        'Offre': 'offre'
+    };
+    return mapping[docName] || 'contrat';
+}
+
 function cycleDocStatus(type, clientId, docName) {
     const record = data[type].find(r => r.id === clientId);
     if (!record) return;
@@ -363,15 +373,16 @@ function cycleDocStatus(type, clientId, docName) {
     renderTable(type);
 }
 
-function generateDocFromCRM(record, docType) {
-    console.log("generateDocFromCRM appelée avec:", record, docType);
+function generateDocFromCRM(record, docName) {
+    console.log("generateDocFromCRM appelée avec:", record, docName);
     
     if (!record || !record.clientName) {
         alert("Erreur: Aucune donnée client");
         return;
     }
     
-    // Afficher un modal avec TOUS les champs
+    // Déterminer le type de doc automatiquement
+    const docType = getDocTypeFromName(docName);
     showCompleteFormModal(record, docType);
 }
 
@@ -447,13 +458,7 @@ function showCompleteFormModal(record, docType) {
                     <input type="text" id="formMontantTTC" value="${record.montantTTC || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
                 </div>
                 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Quel document générer?</label>
-                    <select id="formDocType" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
-                        <option value="contrat">Contrat de sous-traitance</option>
-                        <option value="form03">FORM 03-F</option>
-                    </select>
-                </div>
+                <input type="hidden" id="formDocType" value="${docType}">
                 
                 <div style="margin-top: 20px; text-align: right;">
                     <button onclick="closeCompleteFormModal()" style="background: #ccc; color: #333; padding: 10px 20px; margin-left: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 13px;">Annuler</button>
