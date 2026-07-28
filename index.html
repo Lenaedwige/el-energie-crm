@@ -465,17 +465,15 @@ function closeCompleteFormModal() {
 }
 
 function submitCompleteForm(docType) {
-    // Récupérer les 4 champs clés + montantHT + formateur auto
+    // Récupérer tous les champs
     const clientName = document.getElementById('formClientName').value;
+    const email = document.getElementById('formEmail').value;
+    const telephone = document.getElementById('formTelephone').value;
+    const entreprise = document.getElementById('formEntreprise').value;
     const dateDebut = document.getElementById('formDateDebut').value;
     const dateFin = document.getElementById('formDateFin').value;
     const montantHT = document.getElementById('formMontantHT').value;
     const montantTTC = document.getElementById('formMontantTTC').value;
-    
-    // Récupérer aussi les autres champs
-    const email = document.getElementById('formEmail').value;
-    const entreprise = document.getElementById('formEntreprise').value;
-    const telephone = document.getElementById('formTelephone').value;
     const intituleAction = document.getElementById('formIntituleAction').value;
     const formateur = document.getElementById('formFormateur').value;
     const dureeHeures = document.getElementById('formDureeHeures').value;
@@ -484,27 +482,45 @@ function submitCompleteForm(docType) {
     
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWyBM7Vz_-y5bbXg0HonmIb2jxYjaAUfOFNlQxOgugKV00ekAq5pMoT7mgLJ6Pij1w/exec";
     
-    const params = new URLSearchParams();
-    params.append('clientName', clientName || '');
-    params.append('email', email || '');
-    params.append('entreprise', entreprise || '');
-    params.append('telephone', telephone || '');
-    params.append('intituleAction', intituleAction || '');
-    params.append('formateur', formateur || '');
-    params.append('dureeHeures', dureeHeures || '');
-    params.append('dateDebut', dateDebut || '');
-    params.append('dateFin', dateFin || '');
-    params.append('lieu', lieu || '');
-    params.append('nbStagiaires', nbStagiaires || '');
-    params.append('montantHT', montantHT || '');
-    params.append('montantTTC', montantTTC || '');
-    params.append('prestationType', docType || '');
+    const payload = {
+        clientName: clientName || '',
+        email: email || '',
+        telephone: telephone || '',
+        entreprise: entreprise || '',
+        dateDebut: dateDebut || '',
+        dateFin: dateFin || '',
+        montantHT: montantHT || '',
+        montantTTC: montantTTC || '',
+        intituleAction: intituleAction || '',
+        formateur: formateur || '',
+        dureeHeures: dureeHeures || '',
+        lieu: lieu || '',
+        nbStagiaires: nbStagiaires || '',
+        prestationType: docType || '',
+        statut: 'Prospect'
+    };
     
-    const fullURL = SCRIPT_URL + '?' + params.toString();
-    console.log("Génération avec URL:", fullURL);
+    console.log("Envoi des données:", payload);
     
     closeCompleteFormModal();
-    window.open(fullURL, '_blank');
+    
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log("Réponse du script:", result);
+        if (result.success && result.url) {
+            window.open(result.url, '_blank');
+        } else {
+            alert('Erreur: ' + (result.error || 'Impossible de générer'));
+        }
+    })
+    .catch(error => {
+        console.error("Erreur fetch:", error);
+        alert('Erreur réseau: ' + error.message);
+    });
 }
 
 function getDocStatusColor(status) {
