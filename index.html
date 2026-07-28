@@ -523,14 +523,9 @@ function renderTable(type) {
     const docs = getDocuments(type);
     
     // Filtrer par utilisateur
-    const userRecords = records.filter(r => !r.utilisateur || r.utilisateur === currentUser);
+    const userRecords = records.filter(r => r.utilisateur === currentUser);
     
-    if (!userRecords.length) {
-        container.innerHTML = '<p style="color: #999;">Aucun client enregistré</p>';
-        return;
-    }
-    
-    // Ordre fixe des colonnes de base
+    // Construire les en-têtes toujours
     let html = '<table><thead><tr>';
     html += '<th>Client</th>';
     html += '<th>Entreprise</th>';
@@ -539,7 +534,6 @@ function renderTable(type) {
     html += '<th>Responsable</th>';
     html += '<th>Statut</th>';
     
-    // Colonnes documents dans l'ordre
     docs.forEach(doc => {
         html += '<th style="font-size: 11px; max-width: 80px;">' + doc + '</th>';
     });
@@ -548,36 +542,41 @@ function renderTable(type) {
     html += '<th>Actions</th>';
     html += '</tr></thead><tbody>';
     
-    userRecords.forEach(r => {
-        html += '<tr>';
-        html += '<td>' + r.clientName + '</td>';
-        html += '<td>' + (r.entreprise || '—') + '</td>';
-        html += '<td>' + (r.prestationType || '') + '</td>';
-        html += '<td>' + r.montantTTC + '€</td>';
-        html += '<td><span style="display: inline-block; background: ' + (r.utilisateur === 'Edwige' ? '#F37322' : '#8b5a8e') + '; color: white; padding: 4px 8px; border-radius: 2px; font-size: 11px; font-weight: 600;">' + (r.utilisateur || 'Edwige') + '</span></td>';
-        html += '<td><span class="statut-badge ' + getStatutClass(r.statut) + '">' + r.statut + '</span></td>';
-        
-        // Colonnes documents
-        docs.forEach(doc => {
-            const status = (r.documents && r.documents[doc]) || 'À générer';
-            const bgColor = getDocStatusColor(status);
-            html += '<td style="text-align: center;">';
-            html += '<button onclick="cycleDocStatus(\'' + type + '\', ' + r.id + ', \'' + doc + '\')" style="background: ' + bgColor + '; color: white; border: none; padding: 6px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600; min-width: 70px;">' + status + '</button>';
+    // Si pas de clients, afficher ligne vide
+    if (!userRecords.length) {
+        html += '<tr><td colspan="' + (8 + docs.length) + '" style="text-align: center; color: #999; padding: 40px;">Aucun client enregistré</td></tr>';
+    } else {
+        // Sinon afficher les clients
+        userRecords.forEach(r => {
+            html += '<tr>';
+            html += '<td>' + r.clientName + '</td>';
+            html += '<td>' + (r.entreprise || '—') + '</td>';
+            html += '<td>' + (r.prestationType || '') + '</td>';
+            html += '<td>' + r.montantTTC + '€</td>';
+            html += '<td><span style="display: inline-block; background: ' + (r.utilisateur === 'Edwige' ? '#F37322' : '#8b5a8e') + '; color: white; padding: 4px 8px; border-radius: 2px; font-size: 11px; font-weight: 600;">' + (r.utilisateur || 'Edwige') + '</span></td>';
+            html += '<td><span class="statut-badge ' + getStatutClass(r.statut) + '">' + r.statut + '</span></td>';
+            
+            docs.forEach(doc => {
+                const status = (r.documents && r.documents[doc]) || 'À générer';
+                const bgColor = getDocStatusColor(status);
+                html += '<td style="text-align: center;">';
+                html += '<button onclick="cycleDocStatus(\'' + type + '\', ' + r.id + ', \'' + doc + '\')" style="background: ' + bgColor + '; color: white; border: none; padding: 6px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600; min-width: 70px;">' + status + '</button>';
+                html += '</td>';
+            });
+            
+            html += '<td style="font-size: 11px;">';
+            if (r.email) html += r.email + '<br>';
+            if (r.email2) html += r.email2;
+            html += '<br><button class="btn-edit" onclick="sendEmail(data.' + type + '.find(x => x.id === ' + r.id + '))" style="margin-top: 4px; background: var(--color-primary); color: white; padding: 4px 8px; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; width: 100%;">✉ Envoyer</button>';
             html += '</td>';
+            
+            html += '<td>';
+            html += '<button class="btn-edit" onclick="editRecord(\'' + type + '\', ' + r.id + ')">✎ Modifier</button> ';
+            html += '<button class="btn-delete" onclick="deleteRecord(\'' + type + '\', ' + r.id + ')">✕ Supp</button>';
+            html += '</td>';
+            html += '</tr>';
         });
-        
-        html += '<td style="font-size: 11px;">';
-        if (r.email) html += r.email + '<br>';
-        if (r.email2) html += r.email2;
-        html += '<br><button class="btn-edit" onclick="sendEmail(data.' + type + '.find(x => x.id === ' + r.id + '))" style="margin-top: 4px; background: var(--color-primary); color: white; padding: 4px 8px; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; width: 100%;">✉ Envoyer</button>';
-        html += '</td>';
-        
-        html += '<td>';
-        html += '<button class="btn-edit" onclick="editRecord(\'' + type + '\', ' + r.id + ')">✎ Modifier</button> ';
-        html += '<button class="btn-delete" onclick="deleteRecord(\'' + type + '\', ' + r.id + ')">✕ Supp</button>';
-        html += '</td>';
-        html += '</tr>';
-    });
+    }
     
     html += '</tbody></table>';
     container.innerHTML = html;
