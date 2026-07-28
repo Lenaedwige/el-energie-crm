@@ -447,9 +447,17 @@ function showCompleteFormModal(record, docType) {
                     <input type="text" id="formMontantTTC" value="${record.montantTTC || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
                 </div>
                 
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; color: #0F4761; margin-bottom: 5px; font-size: 13px;">Quel document générer?</label>
+                    <select id="formDocType" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                        <option value="contrat">Contrat de sous-traitance</option>
+                        <option value="form03">FORM 03-F</option>
+                    </select>
+                </div>
+                
                 <div style="margin-top: 20px; text-align: right;">
                     <button onclick="closeCompleteFormModal()" style="background: #ccc; color: #333; padding: 10px 20px; margin-left: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 13px;">Annuler</button>
-                    <button onclick="submitCompleteForm('${docType}')" style="background: #F37322; color: white; padding: 10px 20px; margin-left: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 13px;">Générer le document</button>
+                    <button onclick="submitCompleteForm()" style="background: #F37322; color: white; padding: 10px 20px; margin-left: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 13px;">Générer le document</button>
                 </div>
             </div>
         </div>
@@ -464,7 +472,7 @@ function closeCompleteFormModal() {
     if (modal) modal.remove();
 }
 
-function submitCompleteForm(docType) {
+function submitCompleteForm() {
     // Récupérer tous les champs
     const clientName = document.getElementById('formClientName').value;
     const email = document.getElementById('formEmail').value;
@@ -479,6 +487,7 @@ function submitCompleteForm(docType) {
     const dureeHeures = document.getElementById('formDureeHeures').value;
     const lieu = document.getElementById('formLieu').value;
     const nbStagiaires = document.getElementById('formNbStagiaires').value;
+    const docType = document.getElementById('formDocType').value;
     
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzI5SiMjhusiQltlBqLiwvPhxLMcv28WiELGIr5bJbG_x5ovfTb8AaOGjzNef8GTXU/exec";
     
@@ -496,7 +505,7 @@ function submitCompleteForm(docType) {
         dureeHeures: dureeHeures || '',
         lieu: lieu || '',
         nbStagiaires: nbStagiaires || '',
-        prestationType: docType || '',
+        docType: docType || 'contrat',
         statut: 'Prospect'
     };
     
