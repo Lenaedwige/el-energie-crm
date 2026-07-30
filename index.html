@@ -354,29 +354,7 @@ function cycleDocStatus(type, clientId, docName) {
     
     saveData();
     renderTable(type);
-}
-
-function generateDocFromCRM(client, docName) {
-    console.log("=== DEBUT generateDocFromCRM ===");
-    console.log("docName:", docName);
-    console.log("client:", client);
-    
-    // Préparer les données
-    const clientData = {
-        clientName: client.clientName,
-        entreprise: client.entreprise || '',
-        email: client.email || '',
-        telephone: client.telephone || '',
-        contact2: client.contact2 || '',
-        email2: client.email2 || '',
-        telephone2: client.telephone2 || '',
-        montantTTC: client.montantTTC || 0,
-        prestationType: client.prestationType || '',
-        type: client.type || '',
-        dateDebut: new Date().toLocaleDateString('fr-FR'),
-        dateFin: new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('fr-FR')
-    };
-    
+} 
     console.log("clientData préparées:", clientData);
     
     // Déterminer le type de doc exact avec noms des fichiers
