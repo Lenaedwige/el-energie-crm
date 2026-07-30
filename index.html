@@ -338,17 +338,18 @@ function sendEmail(record) {
 function cycleDocStatus(type, clientId, docName) {
     const record = data[type].find(r => r.id === clientId);
     if (!record) return;
-    
+
     if (!record.documents) record.documents = {};
+    
     const states = ['À générer', 'Généré', 'Envoyé', 'Signé'];
     const current = record.documents[docName] || 'À générer';
     const idx = states.indexOf(current);
     const nextState = states[(idx + 1) % states.length];
+    
     record.documents[docName] = nextState;
     
-    // Si "À générer" → "Généré", déclencher génération
-    if (current === 'À générer' && nextState === 'Généré') {
-        generateDocFromCRM(record, docName);
+    localStorage.setItem('el-energie-crm-data', JSON.stringify(data));
+    renderTable(type);
     }
     
     saveData();
