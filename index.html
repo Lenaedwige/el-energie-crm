@@ -326,6 +326,65 @@ function renderDashboard() {
     `;
 }
 
+const docTemplateMap = {
+    'Diagnostic': '17KpAQwLqn6L0Ge0Fq58YYts5WHQlbyOZ',
+    'Fiche Navette': '',
+    'Programme': '',
+    'Convention': '',
+    'Convocation': '',
+    'Feuille d\'émargement': '',
+    'Attestation': '',
+    'Facture': '',
+    'Facture acquitté': ''
+};
+
+function generateDoc(type, clientId, docName) {
+    const record = data[type].find(r => r.id === clientId);
+    if (!record) return;
+
+    const templateId = docTemplateMap[docName];
+    if (!templateId) {
+        alert(`⚠️ Template non configuré pour ${docName}`);
+        return;
+    }
+
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbzkP8NZg8ZIVCqIG0cgMf6AhfVZLDOn1-2D-r4j9sKajMlgPxf42A0ZhypNDGwPqJgE/exec";
+
+    const clientData = {
+        clientName: record.clientName,
+        email: record.email,
+        telephone: record.telephone,
+        SIRET: record.SIRET || '',
+        entreprise: record.entreprise,
+        adressePostale: record.adressePostale || '',
+        prestationType: record.prestationType,
+        OPCO: record.OPCO || '',
+        montantTTC: record.montantTTC,
+        contact2: record.contact2 || '',
+        email2: record.email2 || '',
+        telephone2: record.telephone2 || ''
+    };
+
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({ clientData, docName, templateId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('✓ Doc générée:', data.document.fileUrl);
+            alert(`✓ ${docName} généré!`);
+        } else {
+            console.error('❌ Erreur:', data.error);
+            alert(`❌ Erreur: ${data.error}`);
+        }
+    })
+    .catch(err => {
+        console.error('❌ ERREUR FETCH:', err);
+        alert('❌ Erreur de connexion');
+    });
+}
+
 function cycleDocStatus(type, clientId, docName) {
     const record = data[type].find(r => r.id === clientId);
     if (!record) return;
@@ -336,6 +395,11 @@ function cycleDocStatus(type, clientId, docName) {
     const current = record.documents[docName] || 'À générer';
     const idx = states.indexOf(current);
     const nextState = states[(idx + 1) % states.length];
+    
+    // Si on passe à "Généré", appeler le script
+    if (nextState === 'Généré' && current === 'À générer') {
+        generateDoc(type, clientId, docName);
+    }
     
     record.documents[docName] = nextState;
     saveData();
