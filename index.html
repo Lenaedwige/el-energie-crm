@@ -394,6 +394,12 @@ function cycleDocStatus(type, clientId, docName) {
     const states = ['À générer', 'Généré', 'Envoyé', 'Signé'];
     const current = record.documents[docName] || 'À générer';
     const idx = states.indexOf(current);
+    
+    // Si déjà "Signé", ne pas continuer (arrêt du cyclage)
+    if (current === 'Signé') {
+        return;
+    }
+    
     const nextState = states[(idx + 1) % states.length];
     
     // Si on passe à "Généré", appeler le script
