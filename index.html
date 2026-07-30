@@ -352,6 +352,7 @@ function generateDoc(type, clientId, docName) {
 
     const clientData = {
         clientName: record.clientName,
+        formateur: currentUser,
         email: record.email,
         telephone: record.telephone,
         SIRET: record.SIRET || '',
