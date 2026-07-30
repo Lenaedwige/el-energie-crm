@@ -128,6 +128,11 @@
             <input type="text" id="editClientName">
         </div>
         
+        <div class="form-group" id="siretGroup" style="display: none;">
+            <label>SIRET</label>
+            <input type="text" id="editSIRET">
+        </div>
+        
         <div class="form-group">
             <label>Email</label>
             <input type="email" id="editEmail">
@@ -143,9 +148,19 @@
             <input type="text" id="editEntreprise">
         </div>
         
+        <div class="form-group" id="adresseGroup" style="display: none;">
+            <label>Adresse Postale</label>
+            <input type="text" id="editAdressePostale">
+        </div>
+        
         <div class="form-group">
             <label>Type Prestation</label>
             <input type="text" id="editPrestationType">
+        </div>
+        
+        <div class="form-group" id="opcoGroup" style="display: none;">
+            <label>OPCO</label>
+            <input type="text" id="editOPCO">
         </div>
         
         <div class="form-group">
@@ -407,21 +422,43 @@ function renderTable(type) {
     container.innerHTML = html;
 }
 
+function toggleExtraFields() {
+    const prestationType = document.getElementById('editPrestationType').value.toLowerCase();
+    const isFormation = prestationType.includes('formation') || prestationType.includes('bilan') === false;
+    const siretGroup = document.getElementById('siretGroup');
+    const adresseGroup = document.getElementById('adresseGroup');
+    const opcoGroup = document.getElementById('opcoGroup');
+    
+    if (isFormation) {
+        siretGroup.style.display = 'block';
+        adresseGroup.style.display = 'block';
+        opcoGroup.style.display = 'block';
+    } else {
+        siretGroup.style.display = 'none';
+        adresseGroup.style.display = 'none';
+        opcoGroup.style.display = 'none';
+    }
+}
+
 function showAddClientModal() {
     editingRecord = null;
     editingType = null;
     document.getElementById('modalTitle').innerText = 'Ajouter Client';
     document.getElementById('editClientName').value = '';
+    document.getElementById('editSIRET').value = '';
     document.getElementById('editEmail').value = '';
     document.getElementById('editTelephone').value = '';
     document.getElementById('editContact2').value = '';
     document.getElementById('editEmail2').value = '';
     document.getElementById('editTelephone2').value = '';
     document.getElementById('editEntreprise').value = '';
+    document.getElementById('editAdressePostale').value = '';
     document.getElementById('editPrestationType').value = '';
+    document.getElementById('editOPCO').value = '';
     document.getElementById('editMontantTTC').value = '';
     document.getElementById('editStatut').value = 'Prospect';
     document.getElementById('editNotes').value = '';
+    toggleExtraFields();
     document.getElementById('editModal').classList.add('active');
 }
 
@@ -436,17 +473,21 @@ function editRecord(type, id) {
     
     document.getElementById('modalTitle').innerText = 'Modifier Client';
     document.getElementById('editClientName').value = editingRecord.clientName || '';
+    document.getElementById('editSIRET').value = editingRecord.SIRET || '';
     document.getElementById('editEmail').value = editingRecord.email || '';
     document.getElementById('editTelephone').value = editingRecord.telephone || '';
     document.getElementById('editContact2').value = editingRecord.contact2 || '';
     document.getElementById('editEmail2').value = editingRecord.email2 || '';
     document.getElementById('editTelephone2').value = editingRecord.telephone2 || '';
     document.getElementById('editEntreprise').value = editingRecord.entreprise || '';
+    document.getElementById('editAdressePostale').value = editingRecord.adressePostale || '';
     document.getElementById('editPrestationType').value = editingRecord.prestationType || '';
+    document.getElementById('editOPCO').value = editingRecord.OPCO || '';
     document.getElementById('editMontantTTC').value = editingRecord.montantTTC || 0;
     document.getElementById('editStatut').value = editingRecord.statut || 'Prospect';
     document.getElementById('editNotes').value = editingRecord.notes || '';
     
+    toggleExtraFields();
     document.getElementById('editModal').classList.add('active');
 }
 
@@ -456,13 +497,16 @@ function closeModal() {
 
 function saveRecord() {
     const name = document.getElementById('editClientName').value.trim();
+    const SIRET = document.getElementById('editSIRET').value.trim();
     const email = document.getElementById('editEmail').value.trim();
     const telephone = document.getElementById('editTelephone').value.trim();
     const contact2 = document.getElementById('editContact2').value.trim();
     const email2 = document.getElementById('editEmail2').value.trim();
     const telephone2 = document.getElementById('editTelephone2').value.trim();
     const entreprise = document.getElementById('editEntreprise').value.trim();
+    const adressePostale = document.getElementById('editAdressePostale').value.trim();
     const prestationType = document.getElementById('editPrestationType').value.trim();
+    const OPCO = document.getElementById('editOPCO').value.trim();
     const montant = parseInt(document.getElementById('editMontantTTC').value) || 0;
     const statut = document.getElementById('editStatut').value;
     const notes = document.getElementById('editNotes').value.trim();
@@ -474,13 +518,16 @@ function saveRecord() {
     
     if (editingRecord) {
         editingRecord.clientName = name;
+        editingRecord.SIRET = SIRET;
         editingRecord.email = email;
         editingRecord.telephone = telephone;
         editingRecord.contact2 = contact2;
         editingRecord.email2 = email2;
         editingRecord.telephone2 = telephone2;
         editingRecord.entreprise = entreprise;
+        editingRecord.adressePostale = adressePostale;
         editingRecord.prestationType = prestationType;
+        editingRecord.OPCO = OPCO;
         editingRecord.montantTTC = montant;
         editingRecord.statut = statut;
         editingRecord.notes = notes;
@@ -492,13 +539,16 @@ function saveRecord() {
         data[guessType].push({
             id: newId,
             clientName: name,
+            SIRET: SIRET,
             email: email,
             telephone: telephone,
             contact2: contact2,
             email2: email2,
             telephone2: telephone2,
             entreprise: entreprise,
+            adressePostale: adressePostale,
             prestationType: prestationType,
+            OPCO: OPCO,
             montantTTC: montant,
             statut: statut,
             notes: notes,
@@ -567,6 +617,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTable('formations');
     renderTable('animations');
     renderTable('seminaires');
+    
+    // Listener pour afficher/masquer champs extras
+    document.getElementById('editPrestationType').addEventListener('change', toggleExtraFields);
+    document.getElementById('editPrestationType').addEventListener('input', toggleExtraFields);
 });
 </script>
 
