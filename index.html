@@ -100,6 +100,12 @@
                 <div id="bilansTable"></div>
             </div>
 
+            <div id="participants" class="view">
+                <h2>Participants</h2>
+                <button onclick="showAddParticipantModal()">+ Ajouter Participant</button>
+                <div id="participantsTable"></div>
+            </div>
+
             <div id="formations" class="view">
                 <h2>Formations</h2>
                 <div id="formationsTable"></div>
@@ -171,11 +177,6 @@
         <div class="form-group">
             <label>Quantité de participants</label>
             <input type="number" id="editQuantiteParticipants">
-        </div>
-
-        <div class="form-group">
-            <label>Liste des stagiaires (emails, séparés par des virgules)</label>
-            <textarea id="editListeStagiaires" rows="3"></textarea>
         </div>
         
         <div class="form-group">
