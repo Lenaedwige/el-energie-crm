@@ -257,7 +257,7 @@ const getStatutClass = (statut) => {
 
 const getDocuments = (type) => {
     return type === 'formations' ? 
-        ['Diagnostic', 'Participants', 'Fiche Navette', 'Programme', 'Convention', 'Convocation', 'Feuille d\'émargement', 'Attestation', 'Facture', 'Facture acquitté'] :
+        ['Diagnostic', 'Fiche Navette', 'Programme', 'Convention', 'Convocation', 'Feuille d\'émargement', 'Attestation', 'Facture', 'Facture acquitté'] :
         ['Convention', 'Offre', 'FORM 03-F', 'Synthèse', 'Émargement'];
 };
 
@@ -472,7 +472,7 @@ function renderTable(type) {
     let html = '<table style="overflow-x: auto;"><tr>';
     
     if (type === 'formations') {
-        html += '<th>Entreprise</th><th>Nom du Client</th><th>Type de prestation</th><th>Montant HT</th><th>Montant TTC</th><th>Responsable</th><th>Statut</th>';
+        html += '<th>Entreprise</th><th>Nom du Client</th><th>Type de prestation</th><th>Montant HT</th><th>Montant TTC</th><th>Responsable</th><th>Statut</th><th>Participants</th>';
         docs.forEach(doc => {
             html += '<th style="font-size: 11px; max-width: 80px;">' + doc + '</th>';
         });
@@ -498,27 +498,25 @@ function renderTable(type) {
             html += '<td><span style="display: inline-block; background: ' + (r.utilisateur === 'Edwige' ? '#F37322' : '#8b5a8e') + '; color: white; padding: 4px 8px; border-radius: 2px; font-size: 11px; font-weight: 600;">' + (r.utilisateur || 'Edwige') + '</span></td>';
             html += '<td><span class="statut-badge ' + getStatutClass(r.statut) + '">' + r.statut + '</span></td>';
             
+            // Colonne Participants (avant les documents)
+            const participants = data.participants ? data.participants.filter(p => p.clientId === r.id) : [];
+            const participantCount = participants.length;
+            html += '<td style="font-size: 11px;">';
+            if (participantCount > 0) {
+                html += '<span style="display: inline-block; background: #4CAF50; color: white; padding: 4px 8px; border-radius: 3px; font-weight: 600; margin-right: 8px;">' + participantCount + ' participant' + (participantCount > 1 ? 's' : '') + '</span>';
+            } else {
+                html += '<span style="display: inline-block; background: #ccc; color: #666; padding: 4px 8px; border-radius: 3px; font-weight: 600; margin-right: 8px;">0 participant</span>';
+            }
+            html += '<button class="btn-doc" onclick="showParticipantsTableModal(' + r.id + ')" style="background: #2196F3; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600;">Gérer</button>';
+            html += '</td>';
+            
+            // Colonnes documents
             docs.forEach(doc => {
-                if (doc === 'Participants') {
-                    // Afficher juste le nombre de participants + bouton Ajouter
-                    const participants = data.participants ? data.participants.filter(p => p.clientId === r.id) : [];
-                    const count = participants.length;
-                    html += '<td style="font-size: 11px;">';
-                    if (count > 0) {
-                        html += '<span style="display: inline-block; background: #4CAF50; color: white; padding: 4px 8px; border-radius: 3px; font-weight: 600; margin-right: 8px;">' + count + ' participant' + (count > 1 ? 's' : '') + '</span>';
-                    } else {
-                        html += '<span style="display: inline-block; background: #ccc; color: #666; padding: 4px 8px; border-radius: 3px; font-weight: 600; margin-right: 8px;">0 participant</span>';
-                    }
-                    html += '<button class="btn-doc" onclick="showParticipantsTableModal(' + r.id + ')" style="background: #2196F3; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600;">Gérer</button>';
-                    html += '</td>';
-                } else {
-                    // Afficher le bouton document
-                    const status = (r.documents && r.documents[doc]) || 'À générer';
-                    const bgColor = getDocStatusColor(status);
-                    html += '<td style="text-align: center;">';
-                    html += '<button class="btn-doc" onclick="cycleDocStatus(\'' + type + '\', ' + r.id + ', \'' + doc + '\')" style="background: ' + bgColor + '; color: white; border: none; padding: 6px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600; min-width: 70px;">' + status + '</button>';
-                    html += '</td>';
-                }
+                const status = (r.documents && r.documents[doc]) || 'À générer';
+                const bgColor = getDocStatusColor(status);
+                html += '<td style="text-align: center;">';
+                html += '<button class="btn-doc" onclick="cycleDocStatus(\'' + type + '\', ' + r.id + ', \'' + doc + '\')" style="background: ' + bgColor + '; color: white; border: none; padding: 6px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600; min-width: 70px;">' + status + '</button>';
+                html += '</td>';
             });
         } else {
             html += '<td>' + r.clientName + '</td>';
