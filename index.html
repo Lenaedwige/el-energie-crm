@@ -211,6 +211,28 @@
     </div>
 </div>
 
+<!-- MODAL AJOUTER PARTICIPANT -->
+<div id="participantModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div class="modal-content" style="background: white; padding: 30px; border-radius: 8px; width: 90%; max-width: 400px;">
+        <h2>Ajouter Participant</h2>
+        
+        <div class="form-group">
+            <label>Nom Complet</label>
+            <input type="text" id="editParticipantName" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="editParticipantEmail" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="button-save" onclick="saveParticipant()" style="flex: 1; padding: 10px; background: #F37322; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Enregistrer</button>
+            <button class="button-cancel" onclick="closeParticipantModal()" style="flex: 1; padding: 10px; background: #ccc; color: #333; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Annuler</button>
+        </div>
+    </div>
+</div>
+
 <script>
 let currentUser = 'Edwige';
 let editingRecord = null;
@@ -256,7 +278,8 @@ let data = {
     animations: [
         {id:1, clientName:'FNAIM', email:'', telephone:'', contact2:'', email2:'', telephone2:'', entreprise:'FNAIM', prestationType:'Animation', montantTTC:300, statut:'Facturé', notes:'', type:'animation', documents:{}, utilisateur:'Edwige'}
     ],
-    seminaires: []
+    seminaires: [],
+    participants: []
 };
 
 function switchView(view) {
@@ -370,8 +393,7 @@ function generateDoc(type, clientId, docName) {
         contact2: record.contact2 || '',
         email2: record.email2 || '',
         telephone2: record.telephone2 || '',
-        quantiteParticipants: record.quantiteParticipants || '',
-        listeStagiaires: record.listeStagiaires || ''
+        quantiteParticipants: record.quantiteParticipants || ''
     };
 
     fetch(scriptUrl, {
@@ -464,7 +486,7 @@ function renderTable(type) {
             
             docs.forEach(doc => {
                 if (doc === 'Participants') {
-                    // Afficher la liste des participants
+                    // Afficher la liste des participants avec bouton Ajouter
                     const participants = data.participants ? data.participants.filter(p => p.clientId === r.id) : [];
                     html += '<td style="font-size: 11px;">';
                     if (participants.length > 0) {
@@ -472,8 +494,9 @@ function renderTable(type) {
                             if (idx > 0) html += '<br>';
                             html += p.name + ' (' + p.email + ')';
                         });
+                        html += '<br><button class="btn-doc" onclick="showAddParticipantModal(\'' + r.id + '\')" style="margin-top: 5px; background: #4CAF50; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600;">+ Ajouter</button>';
                     } else {
-                        html += '—';
+                        html += '<button class="btn-doc" onclick="showAddParticipantModal(\'' + r.id + '\')" style="background: #4CAF50; color: white; border: none; padding: 6px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600;">+ Ajouter</button>';
                     }
                     html += '</td>';
                 } else {
@@ -554,7 +577,6 @@ function showAddClientModal() {
     document.getElementById('editStatut').value = 'Prospect';
     document.getElementById('editNotes').value = '';
     document.getElementById('editQuantiteParticipants').value = '';
-    document.getElementById('editListeStagiaires').value = '';
     toggleExtraFields();
     document.getElementById('editModal').classList.add('active');
 }
@@ -584,7 +606,6 @@ function editRecord(type, id) {
     document.getElementById('editStatut').value = editingRecord.statut || 'Prospect';
     document.getElementById('editNotes').value = editingRecord.notes || '';
     document.getElementById('editQuantiteParticipants').value = editingRecord.quantiteParticipants || '';
-    document.getElementById('editListeStagiaires').value = editingRecord.listeStagiaires || '';
     
     toggleExtraFields();
     document.getElementById('editModal').classList.add('active');
@@ -592,6 +613,45 @@ function editRecord(type, id) {
 
 function closeModal() {
     document.getElementById('editModal').classList.remove('active');
+}
+
+let currentParticipantClientId = null;
+
+function showAddParticipantModal(clientId) {
+    currentParticipantClientId = clientId;
+    document.getElementById('editParticipantName').value = '';
+    document.getElementById('editParticipantEmail').value = '';
+    document.getElementById('participantModal').style.display = 'flex';
+}
+
+function closeParticipantModal() {
+    document.getElementById('participantModal').style.display = 'none';
+    currentParticipantClientId = null;
+}
+
+function saveParticipant() {
+    const name = document.getElementById('editParticipantName').value.trim();
+    const email = document.getElementById('editParticipantEmail').value.trim();
+    
+    if (!name || !email) {
+        alert('Nom et email requis');
+        return;
+    }
+    
+    if (!data.participants) {
+        data.participants = [];
+    }
+    
+    data.participants.push({
+        id: 'participant_' + Date.now(),
+        clientId: currentParticipantClientId,
+        name: name,
+        email: email
+    });
+    
+    saveData();
+    renderTable('formations');
+    closeParticipantModal();
 }
 
 function saveRecord() {
@@ -610,7 +670,6 @@ function saveRecord() {
     const statut = document.getElementById('editStatut').value;
     const notes = document.getElementById('editNotes').value.trim();
     const quantiteParticipants = document.getElementById('editQuantiteParticipants').value.trim();
-    const listeStagiaires = document.getElementById('editListeStagiaires').value.trim();
     
     if (!name || !prestationType) {
         alert('Nom et Type sont obligatoires');
@@ -633,7 +692,6 @@ function saveRecord() {
         editingRecord.statut = statut;
         editingRecord.notes = notes;
         editingRecord.quantiteParticipants = quantiteParticipants;
-        editingRecord.listeStagiaires = listeStagiaires;
         renderTable(editingType);
     } else {
         const guessType = prestationType.toLowerCase().includes('bilan') ? 'bilans' : 
@@ -656,7 +714,6 @@ function saveRecord() {
             statut: statut,
             notes: notes,
             quantiteParticipants: quantiteParticipants,
-            listeStagiaires: listeStagiaires,
             type: guessType,
             documents: {},
             utilisateur: currentUser
