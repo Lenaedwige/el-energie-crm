@@ -316,11 +316,11 @@ function applyUserColors() {
 }
 
 function saveData() {
-    localStorage.setItem('el-energie-crm-data', JSON.stringify(data));
+    localStorage.setItem('el-energie-crm-data-v2', JSON.stringify(data));
 }
 
 function loadData() {
-    const saved = localStorage.getItem('el-energie-crm-data');
+    const saved = localStorage.getItem('el-energie-crm-data-v2');
     if (saved) data = JSON.parse(saved);
 }
 
