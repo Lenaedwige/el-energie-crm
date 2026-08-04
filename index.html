@@ -164,8 +164,13 @@
         </div>
         
         <div class="form-group">
-            <label>Montant TTC (€)</label>
-            <input type="number" id="editMontantTTC">
+            <label>Quantité de participants</label>
+            <input type="number" id="editQuantiteParticipants">
+        </div>
+
+        <div class="form-group">
+            <label>Liste des stagiaires (emails, séparés par des virgules)</label>
+            <textarea id="editListeStagiaires" rows="3"></textarea>
         </div>
         
         <div class="form-group">
@@ -330,7 +335,7 @@ const docTemplateMap = {
     'Diagnostic': '1nce_ZaplWutY-RhllB_Eso96GOgN5D5hujVPpy3Emkk',
     'Fiche Navette': '195s8Sg-7T8UrmCqyIhGMiM2lB-hzI4asf9sqy8b4Yqs',
     'Programme': '1D7LGlrJ0aFANmhw_0jQ8y5japxJVOs55ZbIm4RRm8Xs',
-    'Convention': '',
+    'Convention': '1-gvct63yaMLfYcBIj4QZ4OUJ5lzW2S871vxpa8zpEGM',
     'Convocation': '',
     'Feuille d\'émargement': '',
     'Attestation': '',
@@ -348,7 +353,7 @@ function generateDoc(type, clientId, docName) {
         return;
     }
 
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbyCiES6MD4176nITL_nMp7EyPapq-Fr16oxILuaqNvRaMF6lGqzR8b9y8y_0TVnJR1_/exec";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbzjBLfEbV4qh5w81_sxyOIh1PAFqBOfB4AEJFxwa_Z0NeDz1a_6ozMCK9HtAvvjpzU/exec";
 
     const clientData = {
         clientName: record.clientName,
@@ -363,7 +368,9 @@ function generateDoc(type, clientId, docName) {
         montantTTC: record.montantTTC,
         contact2: record.contact2 || '',
         email2: record.email2 || '',
-        telephone2: record.telephone2 || ''
+        telephone2: record.telephone2 || '',
+        quantiteParticipants: record.quantiteParticipants || '',
+        listeStagiaires: record.listeStagiaires || ''
     };
 
     fetch(scriptUrl, {
@@ -529,6 +536,8 @@ function showAddClientModal() {
     document.getElementById('editMontantTTC').value = '';
     document.getElementById('editStatut').value = 'Prospect';
     document.getElementById('editNotes').value = '';
+    document.getElementById('editQuantiteParticipants').value = '';
+    document.getElementById('editListeStagiaires').value = '';
     toggleExtraFields();
     document.getElementById('editModal').classList.add('active');
 }
@@ -557,6 +566,8 @@ function editRecord(type, id) {
     document.getElementById('editMontantTTC').value = editingRecord.montantTTC || 0;
     document.getElementById('editStatut').value = editingRecord.statut || 'Prospect';
     document.getElementById('editNotes').value = editingRecord.notes || '';
+    document.getElementById('editQuantiteParticipants').value = editingRecord.quantiteParticipants || '';
+    document.getElementById('editListeStagiaires').value = editingRecord.listeStagiaires || '';
     
     toggleExtraFields();
     document.getElementById('editModal').classList.add('active');
@@ -581,6 +592,8 @@ function saveRecord() {
     const montant = parseInt(document.getElementById('editMontantTTC').value) || 0;
     const statut = document.getElementById('editStatut').value;
     const notes = document.getElementById('editNotes').value.trim();
+    const quantiteParticipants = document.getElementById('editQuantiteParticipants').value.trim();
+    const listeStagiaires = document.getElementById('editListeStagiaires').value.trim();
     
     if (!name || !prestationType) {
         alert('Nom et Type sont obligatoires');
@@ -602,6 +615,8 @@ function saveRecord() {
         editingRecord.montantTTC = montant;
         editingRecord.statut = statut;
         editingRecord.notes = notes;
+        editingRecord.quantiteParticipants = quantiteParticipants;
+        editingRecord.listeStagiaires = listeStagiaires;
         renderTable(editingType);
     } else {
         const guessType = prestationType.toLowerCase().includes('bilan') ? 'bilans' : 
@@ -623,6 +638,8 @@ function saveRecord() {
             montantTTC: montant,
             statut: statut,
             notes: notes,
+            quantiteParticipants: quantiteParticipants,
+            listeStagiaires: listeStagiaires,
             type: guessType,
             documents: {},
             utilisateur: currentUser
