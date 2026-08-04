@@ -417,7 +417,7 @@ function generateDoc(type, clientId, docName) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            console.log('✓ Doc générée:', data.document.fileUrl);
+            console.log('✓ Doc générée:', data.fileUrl);
             alert(`✓ ${docName} généré!`);
         } else {
             console.error('❌ Erreur:', data.error);
