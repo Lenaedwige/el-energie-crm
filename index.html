@@ -100,12 +100,6 @@
                 <div id="bilansTable"></div>
             </div>
 
-            <div id="participants" class="view">
-                <h2>Participants</h2>
-                <button onclick="showAddParticipantModal()">+ Ajouter Participant</button>
-                <div id="participantsTable"></div>
-            </div>
-
             <div id="formations" class="view">
                 <h2>Formations</h2>
                 <div id="formationsTable"></div>
@@ -178,6 +172,11 @@
             <label>Quantité de participants</label>
             <input type="number" id="editQuantiteParticipants">
         </div>
+
+        <div class="form-group">
+            <label>Liste des stagiaires (emails, séparés par des virgules)</label>
+            <textarea id="editListeStagiaires" rows="3"></textarea>
+        </div>
         
         <div class="form-group">
             <label>Statut</label>
@@ -234,7 +233,7 @@ const getStatutClass = (statut) => {
 
 const getDocuments = (type) => {
     return type === 'formations' ? 
-        ['Diagnostic', 'Fiche Navette', 'Participants', 'Programme', 'Convention', 'Convocation', 'Feuille d\'émargement', 'Attestation', 'Facture', 'Facture acquitté'] :
+        ['Diagnostic', 'Fiche Navette', 'Programme', 'Convention', 'Convocation', 'Feuille d\'émargement', 'Attestation', 'Facture', 'Facture acquitté'] :
         ['Convention', 'Offre', 'FORM 03-F', 'Synthèse', 'Émargement'];
 };
 
@@ -441,7 +440,7 @@ function renderTable(type) {
     let html = '<table style="overflow-x: auto;"><tr>';
     
     if (type === 'formations') {
-        html += '<th>Entreprise</th><th>Nom du Client</th><th>Type de prestation</th><th>Montant HT</th><th>Montant TTC</th><th>Responsable</th><th>Statut</th><th>Participants</th>';
+        html += '<th>Entreprise</th><th>Nom du Client</th><th>Type de prestation</th><th>Montant HT</th><th>Montant TTC</th><th>Responsable</th><th>Statut</th>';
         docs.forEach(doc => {
             html += '<th style="font-size: 11px; max-width: 80px;">' + doc + '</th>';
         });
@@ -466,18 +465,6 @@ function renderTable(type) {
             html += '<td style="text-align: right;">' + r.montantTTC + '€</td>';
             html += '<td><span style="display: inline-block; background: ' + (r.utilisateur === 'Edwige' ? '#F37322' : '#8b5a8e') + '; color: white; padding: 4px 8px; border-radius: 2px; font-size: 11px; font-weight: 600;">' + (r.utilisateur || 'Edwige') + '</span></td>';
             html += '<td><span class="statut-badge ' + getStatutClass(r.statut) + '">' + r.statut + '</span></td>';
-            
-            // Colonne Participants (formations only)
-            const participants = data.participants.filter(p => p.clientId === r.id);
-            html += '<td style="font-size: 11px;">';
-            if (participants.length > 0) {
-                participants.forEach(p => {
-                    html += p.name + ' (' + p.email + ')<br>';
-                });
-            } else {
-                html += '—';
-            }
-            html += '</td>';
             
             docs.forEach(doc => {
                 const status = (r.documents && r.documents[doc]) || 'À générer';
