@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRM Edwige et Florence EL-ÉNERGIE</title>
     <style>
+        input[type="email"]::-webkit-calendar-picker-indicator {
+            display: none;
+        }
+        input[type="email"] {
+            background-image: none;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Helvetica, Arial; background: #f5f5f5; }
         
@@ -368,6 +374,12 @@ const docTemplateMap = {
     'Facture acquitté': ''
 };
 
+function formatParticipants(clientId) {
+    const participants = data.participants ? data.participants.filter(p => p.clientId === clientId) : [];
+    if (participants.length === 0) return '';
+    return participants.map(p => p.name + ' (' + p.email + ')').join('\n');
+}
+
 function generateDoc(type, clientId, docName) {
     const record = data[type].find(r => r.id === clientId);
     if (!record) return;
@@ -378,7 +390,7 @@ function generateDoc(type, clientId, docName) {
         return;
     }
 
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbzjBLfEbV4qh5w81_sxyOIh1PAFqBOfB4AEJFxwa_Z0NeDz1a_6ozMCK9HtAvvjpzU/exec";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbyB_AW3bmOv2DmBSTFICvzlwR1lBwAQYTUZq98DcLio4DG2t4-byV3HgNXqyXyIOxyn/exec";
 
     const clientData = {
         clientName: record.clientName,
@@ -394,7 +406,8 @@ function generateDoc(type, clientId, docName) {
         contact2: record.contact2 || '',
         email2: record.email2 || '',
         telephone2: record.telephone2 || '',
-        quantiteParticipants: record.quantiteParticipants || ''
+        quantiteParticipants: record.quantiteParticipants || '',
+        listeStagiaires: formatParticipants(clientId)
     };
 
     fetch(scriptUrl, {
