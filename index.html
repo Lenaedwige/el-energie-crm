@@ -234,7 +234,7 @@ const getStatutClass = (statut) => {
 
 const getDocuments = (type) => {
     return type === 'formations' ? 
-        ['Diagnostic', 'Fiche Navette', 'Programme', 'Convention', 'Convocation', 'Feuille d\'émargement', 'Attestation', 'Facture', 'Facture acquitté'] :
+        ['Diagnostic', 'Fiche Navette', 'Participants', 'Programme', 'Convention', 'Convocation', 'Feuille d\'émargement', 'Attestation', 'Facture', 'Facture acquitté'] :
         ['Convention', 'Offre', 'FORM 03-F', 'Synthèse', 'Émargement'];
 };
 
@@ -441,7 +441,7 @@ function renderTable(type) {
     let html = '<table style="overflow-x: auto;"><tr>';
     
     if (type === 'formations') {
-        html += '<th>Entreprise</th><th>Nom du Client</th><th>Type de prestation</th><th>Montant HT</th><th>Montant TTC</th><th>Responsable</th><th>Statut</th>';
+        html += '<th>Entreprise</th><th>Nom du Client</th><th>Type de prestation</th><th>Montant HT</th><th>Montant TTC</th><th>Responsable</th><th>Statut</th><th>Participants</th>';
         docs.forEach(doc => {
             html += '<th style="font-size: 11px; max-width: 80px;">' + doc + '</th>';
         });
@@ -466,6 +466,18 @@ function renderTable(type) {
             html += '<td style="text-align: right;">' + r.montantTTC + '€</td>';
             html += '<td><span style="display: inline-block; background: ' + (r.utilisateur === 'Edwige' ? '#F37322' : '#8b5a8e') + '; color: white; padding: 4px 8px; border-radius: 2px; font-size: 11px; font-weight: 600;">' + (r.utilisateur || 'Edwige') + '</span></td>';
             html += '<td><span class="statut-badge ' + getStatutClass(r.statut) + '">' + r.statut + '</span></td>';
+            
+            // Colonne Participants (formations only)
+            const participants = data.participants.filter(p => p.clientId === r.id);
+            html += '<td style="font-size: 11px;">';
+            if (participants.length > 0) {
+                participants.forEach(p => {
+                    html += p.name + ' (' + p.email + ')<br>';
+                });
+            } else {
+                html += '—';
+            }
+            html += '</td>';
             
             docs.forEach(doc => {
                 const status = (r.documents && r.documents[doc]) || 'À générer';
