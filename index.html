@@ -587,21 +587,8 @@ function renderTable(type) {
 }
 
 function toggleExtraFields() {
-    const prestationType = document.getElementById('editPrestationType').value.toLowerCase();
-    const isFormation = prestationType.includes('formation') || prestationType.includes('bilan') === false;
-    const siretGroup = document.getElementById('siretGroup');
-    const adresseGroup = document.getElementById('adresseGroup');
-    const opcoGroup = document.getElementById('opcoGroup');
-    
-    if (isFormation) {
-        siretGroup.style.display = 'block';
-        adresseGroup.style.display = 'block';
-        opcoGroup.style.display = 'block';
-    } else {
-        siretGroup.style.display = 'none';
-        adresseGroup.style.display = 'none';
-        opcoGroup.style.display = 'none';
-    }
+    // Tous les champs sont maintenant toujours visibles
+    // Pas besoin de basculer les groupes
 }
 
 function showAddClientModal() {
