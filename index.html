@@ -139,6 +139,11 @@
             <input type="text" id="editSIRET">
         </div>
         
+        <div class="form-group" id="numeroTVAGroup" style="display: none;">
+            <label>Numéro de TVA Intracommunautaire</label>
+            <input type="text" id="editNumeroTVA" placeholder="FR12345678901">
+        </div>
+        
         <div class="form-group">
             <label>Email</label>
             <input type="email" id="editEmail">
@@ -405,7 +410,7 @@ function generateDoc(type, clientId, docName) {
         return;
     }
 
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbwtQ71D3vDmloY0c1-9ABb4pyYY1cCCskzlC2kojB78S9JERP-mvhByJ8mzvDWlcXDX/exec";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbzsM_HV0xJhN_GuMNk4h2W7SbZChGDOVFvE1CpBrojf59cX_6X_DecBwhIhBngRZeNM/exec";
 
     const clientData = {
         clientName: record.clientName,
@@ -413,6 +418,7 @@ function generateDoc(type, clientId, docName) {
         email: record.email,
         telephone: record.telephone,
         SIRET: record.SIRET || '',
+        numeroTVA: record.numeroTVA || '',
         entreprise: record.entreprise,
         adressePostale: record.adressePostale || '',
         prestationType: record.prestationType,
@@ -595,6 +601,7 @@ function showAddClientModal() {
     document.getElementById('modalTitle').innerText = 'Ajouter Client';
     document.getElementById('editClientName').value = '';
     document.getElementById('editSIRET').value = '';
+    document.getElementById('editNumeroTVA').value = '';
     document.getElementById('editEmail').value = '';
     document.getElementById('editTelephone').value = '';
     document.getElementById('editContact2').value = '';
@@ -627,6 +634,7 @@ function editRecord(type, id) {
     document.getElementById('modalTitle').innerText = 'Modifier Client';
     document.getElementById('editClientName').value = editingRecord.clientName || '';
     document.getElementById('editSIRET').value = editingRecord.SIRET || '';
+    document.getElementById('editNumeroTVA').value = editingRecord.numeroTVA || '';
     document.getElementById('editEmail').value = editingRecord.email || '';
     document.getElementById('editTelephone').value = editingRecord.telephone || '';
     document.getElementById('editContact2').value = editingRecord.contact2 || '';
@@ -723,6 +731,7 @@ function saveAndGenerateAllDocs() {
 function saveRecord() {
     const name = document.getElementById('editClientName').value.trim();
     const SIRET = document.getElementById('editSIRET').value.trim();
+    const numeroTVA = document.getElementById('editNumeroTVA').value.trim();
     const email = document.getElementById('editEmail').value.trim();
     const telephone = document.getElementById('editTelephone').value.trim();
     const contact2 = document.getElementById('editContact2').value.trim();
@@ -748,6 +757,7 @@ function saveRecord() {
     if (editingRecord) {
         editingRecord.clientName = name;
         editingRecord.SIRET = SIRET;
+        editingRecord.numeroTVA = numeroTVA;
         editingRecord.email = email;
         editingRecord.telephone = telephone;
         editingRecord.contact2 = contact2;
@@ -773,6 +783,7 @@ function saveRecord() {
             id: newId,
             clientName: name,
             SIRET: SIRET,
+            numeroTVA: numeroTVA,
             email: email,
             telephone: telephone,
             contact2: contact2,
