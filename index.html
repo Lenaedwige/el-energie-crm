@@ -120,6 +120,49 @@
                 <div id="formationsTable"></div>
             </div>
 
+            <!-- MODALE FICHE CLIENT -->
+            <div id="ficheClientModal" class="modal">
+                <div class="modal-content">
+                    <h2>Fiche Client</h2>
+                    <div class="form-group">
+                        <label>Nom Client</label>
+                        <input type="text" id="fcClientName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Entreprise</label>
+                        <input type="text" id="fcEntreprise" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Type Prestation</label>
+                        <input type="text" id="fcPrestationType" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Montant HT (€)</label>
+                        <input type="text" id="fcMontantHT" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Montant TTC (€)</label>
+                        <input type="text" id="fcMontantTTC" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" id="fcEmail" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="text" id="fcTelephone" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Statut</label>
+                        <input type="text" id="fcStatut" readonly>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="button-cancel" onclick="closeFicheClientModal()">Fermer</button>
+                        <button class="button-save" onclick="generateFicheClient()">✓ Générer Fiche Client</button>
+                    </div>
+                </div>
+            </div>
+
             <div id="animations" class="view">
                 <h2>Animations</h2>
                 <div id="animationsTable"></div>
@@ -391,6 +434,7 @@ function renderDashboard() {
 }
 
 const docTemplateMap = {
+    'Fiche Client': '1w9wmsUehzJu7urssfQvuj9FHiuQ12nQfdG--NQnb0XY',
     'Diagnostic': '1nce_ZaplWutY-RhllB_Eso96GOgN5D5hujVPpy3Emkk',
     'Participants': '',
     'Fiche Navette': '195s8Sg-7T8UrmCqyIhGMiM2lB-hzI4asf9sqy8b4Yqs',
@@ -505,7 +549,7 @@ function renderTable(type) {
     let html = '<table style="overflow-x: auto;"><tr>';
     
     if (type === 'formations') {
-        html += '<th>Entreprise</th><th>Nom du Client</th><th>Type de prestation</th><th>Montant HT</th><th>Montant TTC</th><th>Responsable</th><th>Statut</th>';
+        html += '<th>Entreprise</th><th>Nom du Client</th><th>Type de prestation</th><th>Montant HT</th><th>Montant TTC</th><th>Responsable</th><th>Statut</th><th style="font-size: 11px;">Fiche Client</th>';
         docs.forEach(doc => {
             html += '<th style="font-size: 11px; max-width: 80px;">' + doc + '</th>';
         });
@@ -530,6 +574,9 @@ function renderTable(type) {
             html += '<td style="text-align: right;">' + r.montantTTC + '€</td>';
             html += '<td><span style="display: inline-block; background: ' + (r.utilisateur === 'Edwige' ? '#F37322' : '#8b5a8e') + '; color: white; padding: 4px 8px; border-radius: 2px; font-size: 11px; font-weight: 600;">' + (r.utilisateur || 'Edwige') + '</span></td>';
             html += '<td><span class="statut-badge ' + getStatutClass(r.statut) + '">' + r.statut + '</span></td>';
+            
+            // Bouton Fiche Client
+            html += '<td style="text-align: center;"><button class="btn-doc" onclick="openFicheClientModal(\'formations\', ' + r.id + ')" style="background: #FF6B9D; color: white; border: none; padding: 6px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600; min-width: 70px;">Fiche</button></td>';
             
             // Colonnes documents (y compris Participants)
             docs.forEach(doc => {
@@ -878,6 +925,38 @@ function importData(event) {
         }
     };
     reader.readAsText(file);
+}
+
+// FICHE CLIENT FUNCTIONS
+let currentFicheClientId = null;
+
+function openFicheClientModal(type, id) {
+    const record = data[type].find(r => r.id === id);
+    if (!record) return;
+    
+    currentFicheClientId = id;
+    document.getElementById('fcClientName').value = record.clientName || '';
+    document.getElementById('fcEntreprise').value = record.entreprise || '';
+    document.getElementById('fcPrestationType').value = record.prestationType || '';
+    document.getElementById('fcMontantHT').value = record.montantHT || '';
+    document.getElementById('fcMontantTTC').value = record.montantTTC || '';
+    document.getElementById('fcEmail').value = record.email || '';
+    document.getElementById('fcTelephone').value = record.telephone || '';
+    document.getElementById('fcStatut').value = record.statut || '';
+    
+    document.getElementById('ficheClientModal').classList.add('active');
+}
+
+function closeFicheClientModal() {
+    document.getElementById('ficheClientModal').classList.remove('active');
+    currentFicheClientId = null;
+}
+
+function generateFicheClient() {
+    if (!currentFicheClientId) return;
+    alert('✓ Fiche Client générée en Drive\n(Test - ID temporaire)');
+    closeFicheClientModal();
+    renderTable('formations');
 }
 
 // Init
