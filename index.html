@@ -127,102 +127,102 @@
                     
                     <div class="form-group">
                         <label>Nom Client</label>
-                        <input type="text" id="fcClientName" autocomplete="off">
+                        <input type="text" id="fcClientName" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Entreprise</label>
-                        <input type="text" id="fcEntreprise" autocomplete="off">
+                        <input type="text" id="fcEntreprise" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>SIRET</label>
-                        <input type="text" id="fcSIRET" autocomplete="off">
+                        <input type="text" id="fcSIRET" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Numéro TVA</label>
-                        <input type="text" id="fcNumeroTVA" autocomplete="off">
+                        <input type="text" id="fcNumeroTVA" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Adresse Postale</label>
-                        <input type="text" id="fcAdressePostale" autocomplete="off">
+                        <input type="text" id="fcAdressePostale" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Type Prestation</label>
-                        <input type="text" id="fcPrestationType" autocomplete="off">
+                        <input type="text" id="fcPrestationType" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>OPCO</label>
-                        <input type="text" id="fcOPCO" autocomplete="off">
+                        <input type="text" id="fcOPCO" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Montant HT (€)</label>
-                        <input type="number" id="fcMontantHT" autocomplete="off">
+                        <input type="number" id="fcMontantHT" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Montant TTC (€)</label>
-                        <input type="number" id="fcMontantTTC" autocomplete="off">
+                        <input type="number" id="fcMontantTTC" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Date Début</label>
-                        <input type="text" id="fcDateDebut" autocomplete="off">
+                        <input type="text" id="fcDateDebut" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Date Fin</label>
-                        <input type="text" id="fcDateFin" autocomplete="off">
+                        <input type="text" id="fcDateFin" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Statut</label>
-                        <input type="text" id="fcStatut" autocomplete="off">
+                        <input type="text" id="fcStatut" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Quantité Participants</label>
-                        <input type="number" id="fcQuantiteParticipants" autocomplete="off">
+                        <input type="number" id="fcQuantiteParticipants" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Notes</label>
-                        <input type="text" id="fcNotes" autocomplete="off">
+                        <input type="text" id="fcNotes" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Contact Principal</label>
-                        <input type="text" id="fcContact1" autocomplete="off">
+                        <input type="text" id="fcContact1" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Email Principal</label>
-                        <input type="text" id="fcEmail1" autocomplete="off">
+                        <input type="text" id="fcEmail1" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Téléphone Principal</label>
-                        <input type="text" id="fcTelephone1" autocomplete="off">
+                        <input type="text" id="fcTelephone1" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Contact Secondaire</label>
-                        <input type="text" id="fcContact2" autocomplete="off">
+                        <input type="text" id="fcContact2" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Email Secondaire</label>
-                        <input type="text" id="fcEmail2" autocomplete="off">
+                        <input type="text" id="fcEmail2" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
                         <label>Téléphone Secondaire</label>
-                        <input type="text" id="fcTelephone2" autocomplete="off">
+                        <input type="text" id="fcTelephone2" autocomplete="new-password">
                     </div>
                     
                     <div class="form-group">
@@ -800,8 +800,8 @@ function showListeStagiairesTableModal(clientId) {
     for (let i = 0; i < 12; i++) {
         const existing = existingParticipants[i] || { name: '', email: '' };
         html += `<tr>
-            <td style="padding: 8px; border: 1px solid #ddd;"><input type="text" id="listeStagiaire_name_${i}" value="${existing.name}" autocomplete="off" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 3px;"></td>
-            <td style="padding: 8px; border: 1px solid #ddd;"><input type="email" id="listeStagiaire_email_${i}" value="${existing.email}" autocomplete="off" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 3px;"></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><input type="text" id="listeStagiaire_name_${i}" value="${existing.name}" autocomplete="new-password" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 3px;"></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><input type="email" id="listeStagiaire_email_${i}" value="${existing.email}" autocomplete="new-password" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 3px;"></td>
         </tr>`;
     }
     
@@ -1160,6 +1160,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Listener pour afficher/masquer champs extras
     document.getElementById('editPrestationType').addEventListener('change', toggleExtraFields);
     document.getElementById('editPrestationType').addEventListener('input', toggleExtraFields);
+    
+    // Bloquer autocomplete Fiche Client
+    const ficheClientInputs = [
+        'fcClientName', 'fcEntreprise', 'fcEmail1', 'fcTelephone1', 
+        'fcContact2', 'fcEmail2', 'fcTelephone2', 'fcAdressePostale'
+    ];
+    
+    ficheClientInputs.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('focus', () => {
+                input.setAttribute('autocomplete', 'off');
+            });
+            input.addEventListener('click', () => {
+                input.setAttribute('autocomplete', 'off');
+            });
+        }
+    });
 });
 </script>
 
