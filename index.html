@@ -123,6 +123,9 @@
             <!-- MODALE FICHE CLIENT -->
             <div id="ficheClientModal" class="modal">
                 <div class="modal-content">
+                    <!-- Faux input pour capturer password manager -->
+                    <input type="password" style="display: none;">
+                    
                     <h2>Fiche Client</h2>
                     
                     <div class="form-group">
@@ -547,7 +550,7 @@ function generateDoc(type, clientId, docName) {
         return;
     }
 
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbwna8XWzEUHnKUNQyXXG7hnlAtQl5KkWTsWOV9Dqm5o8ZVMEgP6ZFrxi4uWPa2egkgG/exec";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbxq2RfH_rX7MoAoxfI0U9tEw4klIAUaXJ-NV_xJGmNlG0hKZnxTbtaQ74S_cvgSV275/exec";
 
     const clientData = {
         clientName: record.clientName,
@@ -1100,7 +1103,7 @@ function generateFicheClient() {
         return;
     }
 
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbwna8XWzEUHnKUNQyXXG7hnlAtQl5KkWTsWOV9Dqm5o8ZVMEgP6ZFrxi4uWPa2egkgG/exec";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbxq2RfH_rX7MoAoxfI0U9tEw4klIAUaXJ-NV_xJGmNlG0hKZnxTbtaQ74S_cvgSV275/exec";
 
     const clientData = {
         clientName: record.clientName,
