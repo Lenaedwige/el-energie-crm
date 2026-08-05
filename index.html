@@ -1063,9 +1063,88 @@ function closeFicheClientModal() {
 
 function generateFicheClient() {
     if (!currentFicheClientId) return;
-    alert('✓ Fiche Client générée en Drive\n(Test - ID réel: 1w9wmsUehzJu7urssfQvuj9FHiuQ12nQfdG--NQnb0XY)');
-    closeFicheClientModal();
-    renderTable('formations');
+
+    // Récupérer les données de la modale Fiche Client
+    const record = data.formations.find(r => r.id === currentFicheClientId);
+    if (!record) return;
+
+    // Mettre à jour le record avec les données de la modale
+    record.clientName = document.getElementById('fcClientName').value;
+    record.entreprise = document.getElementById('fcEntreprise').value;
+    record.SIRET = document.getElementById('fcSIRET').value;
+    record.numeroTVA = document.getElementById('fcNumeroTVA').value;
+    record.adressePostale = document.getElementById('fcAdressePostale').value;
+    record.prestationType = document.getElementById('fcPrestationType').value;
+    record.OPCO = document.getElementById('fcOPCO').value;
+    record.montantHT = parseFloat(document.getElementById('fcMontantHT').value) || 0;
+    record.montantTTC = parseFloat(document.getElementById('fcMontantTTC').value) || 0;
+    record.dateDebut = document.getElementById('fcDateDebut').value;
+    record.dateFin = document.getElementById('fcDateFin').value;
+    record.quantiteParticipants = document.getElementById('fcQuantiteParticipants').value;
+    record.notes = document.getElementById('fcNotes').value;
+    record.clientName = document.getElementById('fcContact1').value;
+    record.email = document.getElementById('fcEmail1').value;
+    record.telephone = document.getElementById('fcTelephone1').value;
+    record.contact2 = document.getElementById('fcContact2').value;
+    record.email2 = document.getElementById('fcEmail2').value;
+    record.telephone2 = document.getElementById('fcTelephone2').value;
+    
+    // Sauvegarder
+    saveData();
+
+    // Envoyer au script pour générer la Fiche Client
+    const templateId = docTemplateMap['Fiche Client'];
+    if (!templateId) {
+        alert('⚠️ Template Fiche Client non configuré');
+        closeFicheClientModal();
+        return;
+    }
+
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbwna8XWzEUHnKUNQyXXG7hnlAtQl5KkWTsWOV9Dqm5o8ZVMEgP6ZFrxi4uWPa2egkgG/exec";
+
+    const clientData = {
+        clientName: record.clientName,
+        formatateur: currentUser,
+        email: record.email,
+        telephone: record.telephone,
+        SIRET: record.SIRET || '',
+        numeroTVA: record.numeroTVA || '',
+        entreprise: record.entreprise,
+        adressePostale: record.adressePostale || '',
+        prestationType: record.prestationType,
+        OPCO: record.OPCO || '',
+        montantTTC: record.montantTTC,
+        montantHT: record.montantHT || 0,
+        dateDebut: record.dateDebut || '',
+        dateFin: record.dateFin || '',
+        contact2: record.contact2 || '',
+        email2: record.email2 || '',
+        telephone2: record.telephone2 || '',
+        quantiteParticipants: record.quantiteParticipants || '',
+        listeStagiaires: formatListeStagiaires(currentFicheClientId)
+    };
+
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({ clientData, docName: 'Fiche Client', templateId })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            console.log('✓ Fiche Client générée:', result.fileUrl);
+            alert('✓ Fiche Client générée!');
+        } else {
+            console.error('❌ Erreur:', result.error);
+            alert(`❌ Erreur: ${result.error}`);
+        }
+        closeFicheClientModal();
+        renderTable('formations');
+    })
+    .catch(err => {
+        console.error('❌ ERREUR FETCH:', err);
+        alert('❌ Erreur de connexion');
+        closeFicheClientModal();
+    });
 }
 
 // Init
