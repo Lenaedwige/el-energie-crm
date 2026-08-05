@@ -180,6 +180,21 @@
         </div>
         
         <div class="form-group">
+            <label>Date Début (JJ/MM/YYYY)</label>
+            <input type="text" id="editDateDebut" placeholder="01/01/2026">
+        </div>
+        
+        <div class="form-group">
+            <label>Date Fin (JJ/MM/YYYY)</label>
+            <input type="text" id="editDateFin" placeholder="05/01/2026">
+        </div>
+        
+        <div class="form-group">
+            <label>Montant HT (€)</label>
+            <input type="number" id="editMontantHT" step="0.01">
+        </div>
+        
+        <div class="form-group">
             <label>Statut</label>
             <select id="editStatut">
                 <option value="Prospect">Prospect</option>
@@ -403,6 +418,9 @@ function generateDoc(type, clientId, docName) {
         prestationType: record.prestationType,
         OPCO: record.OPCO || '',
         montantTTC: record.montantTTC,
+        montantHT: record.montantHT || 0,
+        dateDebut: record.dateDebut || '',
+        dateFin: record.dateFin || '',
         contact2: record.contact2 || '',
         email2: record.email2 || '',
         telephone2: record.telephone2 || '',
@@ -587,6 +605,9 @@ function showAddClientModal() {
     document.getElementById('editPrestationType').value = '';
     document.getElementById('editOPCO').value = '';
     document.getElementById('editMontantTTC').value = '';
+    document.getElementById('editMontantHT').value = '';
+    document.getElementById('editDateDebut').value = '';
+    document.getElementById('editDateFin').value = '';
     document.getElementById('editStatut').value = 'Prospect';
     document.getElementById('editNotes').value = '';
     document.getElementById('editQuantiteParticipants').value = '';
@@ -616,6 +637,9 @@ function editRecord(type, id) {
     document.getElementById('editPrestationType').value = editingRecord.prestationType || '';
     document.getElementById('editOPCO').value = editingRecord.OPCO || '';
     document.getElementById('editMontantTTC').value = editingRecord.montantTTC || 0;
+    document.getElementById('editMontantHT').value = editingRecord.montantHT || 0;
+    document.getElementById('editDateDebut').value = editingRecord.dateDebut || '';
+    document.getElementById('editDateFin').value = editingRecord.dateFin || '';
     document.getElementById('editStatut').value = editingRecord.statut || 'Prospect';
     document.getElementById('editNotes').value = editingRecord.notes || '';
     document.getElementById('editQuantiteParticipants').value = editingRecord.quantiteParticipants || '';
@@ -675,10 +699,10 @@ function saveAndGenerateAllDocs() {
     }
     saveData();
     
-    // Générer TOUS les documents
-    const docs = ['Diagnostic', 'Participants', 'Fiche Navette', 'Programme', 'Convention', 'Convocation', 'Feuille d\'émargement', 'Attestation', 'Facture', 'Facture acquitté'];
+    // Générer SEULEMENT les docs qui ont un templateId configuré
+    const docsAvecTemplate = Object.keys(docTemplateMap).filter(doc => docTemplateMap[doc] && doc !== 'Participants');
     
-    docs.forEach(docName => {
+    docsAvecTemplate.forEach(docName => {
         generateDoc('formations', currentListeStagiairesClientId, docName);
     });
     
@@ -686,7 +710,7 @@ function saveAndGenerateAllDocs() {
     const record = data.formations.find(r => r.id === currentListeStagiairesClientId);
     if (record) {
         if (!record.documents) record.documents = {};
-        docs.forEach(docName => {
+        docsAvecTemplate.forEach(docName => {
             record.documents[docName] = 'Généré';
         });
     }
@@ -709,6 +733,9 @@ function saveRecord() {
     const prestationType = document.getElementById('editPrestationType').value.trim();
     const OPCO = document.getElementById('editOPCO').value.trim();
     const montant = parseInt(document.getElementById('editMontantTTC').value) || 0;
+    const montantHT = parseFloat(document.getElementById('editMontantHT').value) || 0;
+    const dateDebut = document.getElementById('editDateDebut').value.trim();
+    const dateFin = document.getElementById('editDateFin').value.trim();
     const statut = document.getElementById('editStatut').value;
     const notes = document.getElementById('editNotes').value.trim();
     const quantiteParticipants = document.getElementById('editQuantiteParticipants').value.trim();
@@ -731,6 +758,9 @@ function saveRecord() {
         editingRecord.prestationType = prestationType;
         editingRecord.OPCO = OPCO;
         editingRecord.montantTTC = montant;
+        editingRecord.montantHT = montantHT;
+        editingRecord.dateDebut = dateDebut;
+        editingRecord.dateFin = dateFin;
         editingRecord.statut = statut;
         editingRecord.notes = notes;
         editingRecord.quantiteParticipants = quantiteParticipants;
@@ -753,6 +783,9 @@ function saveRecord() {
             prestationType: prestationType,
             OPCO: OPCO,
             montantTTC: montant,
+            montantHT: montantHT,
+            dateDebut: dateDebut,
+            dateFin: dateFin,
             statut: statut,
             notes: notes,
             quantiteParticipants: quantiteParticipants,
