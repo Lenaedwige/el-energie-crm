@@ -540,6 +540,11 @@ function formatListeStagiaires(clientId) {
     return participants.map(p => p.name + ' (' + p.email + ')').join('\n');
 }
 
+function getParticipantsOnly(clientId) {
+    // Retourne UNIQUEMENT les participants, vide si aucun
+    return formatListeStagiaires(clientId);
+}
+
 function generateDoc(type, clientId, docName) {
     const record = data[type].find(r => r.id === clientId);
     if (!record) return;
@@ -554,7 +559,7 @@ function generateDoc(type, clientId, docName) {
 
     const clientData = {
         clientName: record.clientName,
-        formateur: currentUser,
+        formatateur: currentUser,
         email: record.email,
         telephone: record.telephone,
         SIRET: record.SIRET || '',
@@ -571,7 +576,7 @@ function generateDoc(type, clientId, docName) {
         email2: record.email2 || '',
         telephone2: record.telephone2 || '',
         quantiteParticipants: record.quantiteParticipants || '',
-        listeStagiaires: formatListeStagiaires(clientId)
+        listeStagiaires: getParticipantsOnly(clientId)
     };
 
     fetch(scriptUrl, {
@@ -1124,7 +1129,7 @@ function generateFicheClient() {
         email2: record.email2 || '',
         telephone2: record.telephone2 || '',
         quantiteParticipants: record.quantiteParticipants || '',
-        listeStagiaires: formatListeStagiaires(currentFicheClientId)
+        listeStagiaires: getParticipantsOnly(currentFicheClientId)
     };
 
     fetch(scriptUrl, {
