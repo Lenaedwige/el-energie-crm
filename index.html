@@ -263,7 +263,7 @@
         </table>
         
         <div style="display: flex; gap: 10px;">
-            <button onclick="saveAndGenerateAllDocs()" style="flex: 1; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">✓ Générer</button>
+            <button onclick="saveAllParticipants()" style="flex: 1; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">✓ Enregistrer</button>
             <button onclick="closeListeStagiairesTableModal()" style="flex: 1; padding: 10px; background: #ccc; color: #333; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Annuler</button>
         </div>
     </div>
@@ -419,7 +419,7 @@ function generateDoc(type, clientId, docName) {
         return;
     }
 
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbzsM_HV0xJhN_GuMNk4h2W7SbZChGDOVFvE1CpBrojf59cX_6X_DecBwhIhBngRZeNM/exec";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbzEmHHTN5UGcq5lTpPjZ_zrkGaWFfFOchU7k_p1rXH4PS4avc_AoVoiyTb7wcFekoiO/exec";
 
     const clientData = {
         clientName: record.clientName,
@@ -681,6 +681,34 @@ function showListeStagiairesTableModal(clientId) {
 function closeListeStagiairesTableModal() {
     document.getElementById('listeStagiairesTableModal').style.display = 'none';
     currentListeStagiairesClientId = null;
+}
+
+function saveAllParticipants() {
+    if (!data.listeStagiaires) {
+        data.listeStagiaires = [];
+    }
+    
+    // Supprimer les anciens participants pour ce client
+    data.listeStagiaires = data.listeStagiaires.filter(p => p.clientId !== currentListeStagiairesClientId);
+    
+    // Ajouter les nouveaux participants
+    for (let i = 0; i < 12; i++) {
+        const name = document.getElementById(`listeStagiaire_name_${i}`).value.trim();
+        const email = document.getElementById(`listeStagiaire_email_${i}`).value.trim();
+        
+        if (name && email) {
+            data.listeStagiaires.push({
+                id: 'listeStagiaire_' + currentListeStagiairesClientId + '_' + i,
+                clientId: currentListeStagiairesClientId,
+                name: name,
+                email: email
+            });
+        }
+    }
+    
+    saveData();
+    renderTable('formations');
+    closeListeStagiairesTableModal();
 }
 
 function saveAndGenerateAllDocs() {
