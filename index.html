@@ -71,6 +71,7 @@
       border-radius: 8px;
       padding: 20px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
 
     table {
@@ -119,11 +120,6 @@
       color: white;
     }
 
-    .badge-prospect {
-      background: #FFC107;
-      color: white;
-    }
-
     .btn {
       padding: 8px 14px;
       background: #F37322;
@@ -137,6 +133,11 @@
 
     .btn:hover {
       background: #E05F0F;
+    }
+
+    .btn-small {
+      padding: 4px 8px;
+      font-size: 11px;
     }
 
     .modal {
@@ -220,41 +221,6 @@
       background: #45a049;
     }
 
-    .doc-btn {
-      padding: 4px 8px;
-      font-size: 11px;
-      background: #0F4761;
-      cursor: pointer;
-    }
-
-    .doc-btn:hover {
-      background: #F37322;
-    }
-
-    .status-circle {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .status-a-generer {
-      background: #f44336;
-    }
-
-    .status-genere {
-      background: #FFC107;
-    }
-
-    .status-envoye {
-      background: #2196F3;
-    }
-
-    .status-signe {
-      background: #4CAF50;
-    }
-
     .tab-content {
       display: none;
     }
@@ -302,7 +268,7 @@
             <tbody></tbody>
           </table>
         </div>
-        <button class="btn" onclick="openFicheClientModal()" style="margin-top: 20px;">+ Ajouter Formation</button>
+        <button class="btn" onclick="openFicheClientModal()">+ Ajouter Formation</button>
       </div>
 
       <!-- TAB BILANS -->
@@ -334,7 +300,7 @@
   <!-- MODAL FICHE CLIENT -->
   <div id="ficheClientModal" class="modal">
     <div class="modal-content">
-      <h2>Fiche Client - Formation</h2>
+      <h2>Nouvelle Formation</h2>
       <div class="form-group">
         <label>Entreprise *</label>
         <input type="text" id="entreprise" required>
@@ -370,8 +336,8 @@
         <input type="date" id="dateDebut" required>
       </div>
       <div class="form-group">
-        <label>Formateur (auto)</label>
-        <input type="text" id="formateur" disabled>
+        <label>Formateur</label>
+        <input type="text" id="formateur" value="Edwige Lena" disabled>
       </div>
       <div class="form-group">
         <label>Responsable du Dossier *</label>
@@ -390,12 +356,10 @@
 
   <script>
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbyNrKVZrpOWFqU6kM-mL732axsLakE1q9B9HOp9480Qlb7ipzPjK1b_w7t9P7K8a_7pPw/exec';
-
     let formations = JSON.parse(localStorage.getItem('el-energie-formations')) || [];
 
     function openFicheClientModal() {
       document.getElementById('ficheClientModal').classList.add('active');
-      document.getElementById('formateur').value = 'Edwige Lena';
     }
 
     function closeFicheClientModal() {
@@ -437,11 +401,8 @@
 
       formations.push(formation);
       localStorage.setItem('el-energie-formations', JSON.stringify(formations));
-      
       renderFormations();
       closeFicheClientModal();
-      
-      // ENVOYER AU GOOGLE APPS SCRIPT
       sendToGoogleAppsScript(formation);
     }
 
@@ -471,8 +432,8 @@
         }
       })
       .catch(error => {
-        console.error('Erreur envoi:', error);
-        alert('Erreur lors de l\'envoi au serveur');
+        console.error('Erreur:', error);
+        alert('Erreur lors de la génération des documents');
       });
     }
 
@@ -490,11 +451,11 @@
           <td>${f.montantTTC}€</td>
           <td><span class="badge ${f.responsable === 'Edwige' ? 'badge-edwige' : 'badge-florence'}">${f.responsable}</span></td>
           <td><span class="badge badge-actif">${f.statut}</span></td>
-          <td><button class="doc-btn" onclick="toggleDocStatus(${f.id}, 'diagnostic')">📄</button></td>
-          <td><button class="doc-btn" onclick="toggleDocStatus(${f.id}, 'ficheNavette')">📄</button></td>
-          <td><button class="doc-btn" onclick="toggleDocStatus(${f.id}, 'programme')">📄</button></td>
-          <td><button class="doc-btn" onclick="toggleDocStatus(${f.id}, 'convention')">📄</button></td>
-          <td><button class="btn" onclick="deleteFormation(${f.id})">Supprimer</button></td>
+          <td><button class="btn btn-small" onclick="toggleDocStatus(${f.id}, 'diagnostic')">📄</button></td>
+          <td><button class="btn btn-small" onclick="toggleDocStatus(${f.id}, 'ficheNavette')">📄</button></td>
+          <td><button class="btn btn-small" onclick="toggleDocStatus(${f.id}, 'programme')">📄</button></td>
+          <td><button class="btn btn-small" onclick="toggleDocStatus(${f.id}, 'convention')">📄</button></td>
+          <td><button class="btn btn-small" onclick="deleteFormation(${f.id})">Supprimer</button></td>
         `;
       });
     }
@@ -518,26 +479,22 @@
       renderFormations();
     }
 
-    // TAB NAVIGATION
     document.querySelectorAll('.tab-link').forEach(link => {
       link.addEventListener('click', function() {
         document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
         this.classList.add('active');
         const tabId = this.getAttribute('data-tab');
         document.getElementById(tabId).classList.add('active');
       });
     });
 
-    // MODAL CLOSE ON OUTSIDE CLICK
     document.getElementById('ficheClientModal').addEventListener('click', function(e) {
       if (e.target === this) {
         closeFicheClientModal();
       }
     });
 
-    // INIT
     renderFormations();
   </script>
 </body>
