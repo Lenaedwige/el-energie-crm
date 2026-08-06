@@ -1131,6 +1131,10 @@ function generateFicheClient() {
         quantiteParticipants: record.quantiteParticipants || '',
         listeStagiaires: getParticipantsOnly(currentFicheClientId)
     };
+    
+    console.log('📤 DONNÉES ENVOYÉES AU SCRIPT:', clientData);
+    console.log('📄 DOC:', 'Fiche Client');
+    console.log('🔑 TEMPLATE ID:', templateId);
 
     fetch(scriptUrl, {
         method: 'POST',
@@ -1138,6 +1142,7 @@ function generateFicheClient() {
     })
     .then(response => response.json())
     .then(result => {
+        console.log('✓ RÉPONSE SCRIPT:', result);
         if (result.success) {
             console.log('✓ Fiche Client générée:', result.fileUrl);
             alert('✓ Fiche Client générée!');
