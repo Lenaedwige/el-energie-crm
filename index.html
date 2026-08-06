@@ -254,6 +254,14 @@
     .status-signe {
       background: #4CAF50;
     }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -294,7 +302,7 @@
             <tbody></tbody>
           </table>
         </div>
-        <button class="btn" onclick="openFicheClientModal()">+ Ajouter Formation</button>
+        <button class="btn" onclick="openFicheClientModal()" style="margin-top: 20px;">+ Ajouter Formation</button>
       </div>
 
       <!-- TAB BILANS -->
